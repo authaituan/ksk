@@ -11,3 +11,19 @@ yarn-debug.log*
 .env
 .idea/
 .vscode/
+
+# Dữ liệu thật: CSDL, log truy cập, file PIN - KHÔNG BAO GIỜ commit
+data/
+*.db
+*.db-wal
+*.db-shm
+pins-*.csv
+*.xlsx
+*.xls
+# Chỉ cho phép file CSV mẫu (dữ liệu giả)
+*.csv
+!sample_database.csv
+# Chứng chỉ TLS
+*.pem
+*.key
+*.crt

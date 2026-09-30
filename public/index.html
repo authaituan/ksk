@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Tra Cứu Kết Quả Khám Sức Khỏe</title>
+    <meta name="description" content="Tra cứu kết quả khám sức khỏe định kỳ của người lao động.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand-logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-notes-medical"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand-title">KSK <span class="badge-brand">TRA CỨU</span></span>
+                    <span class="brand-sub">KẾT QUẢ KHÁM SỨC KHỎE ĐỊNH KỲ</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="tab-pane active" id="lookup-tab">
+            <div class="hero-section">
+                <div class="hero-background">
+                    <div class="bg-pattern"></div>
+                </div>
+                <div class="hero-content">
+                    <div class="badge-pill">
+                        <i class="fa-solid fa-user-shield"></i> Cổng Tra Cứu Khám Sức Khỏe Định Kỳ Người Lao Động
+                    </div>
+                    <h1 class="hero-title">TRA CỨU KẾT QUẢ KHÁM SỨC KHỎE</h1>
+                    <p class="hero-desc">Nhập <strong>Mã nhân viên</strong>, <strong>Ngày sinh</strong> và <strong>Mã PIN cá nhân</strong> để xem kết quả khám sức khỏe của bạn.</p>
+
+                    <div class="search-card">
+                        <form id="lookupForm" class="search-form" autocomplete="off" novalidate>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="inputEmployeeCode">Mã Nhân Viên <span class="req">*</span></label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-id-badge input-icon"></i>
+                                        <input type="text" id="inputEmployeeCode" placeholder="Ví dụ: 00012345" maxlength="20" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inputDob">Ngày Sinh (DD/MM/YYYY) <span class="req">*</span></label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-calendar-days input-icon"></i>
+                                        <input type="text" id="inputDob" placeholder="Ví dụ: 01/01/1990" maxlength="10" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="inputPin">Mã PIN Cá Nhân (6 số) <span class="req">*</span></label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-key input-icon"></i>
+                                        <input type="password" id="inputPin" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="PIN do bộ phận Nhân sự cấp riêng" required>
+                                    </div>
+                                    <span class="help-text">Nhập sai nhiều lần, việc tra cứu mã nhân viên này sẽ bị tạm khóa.</span>
+                                </div>
+                            </div>
+
+                            <div class="form-message" id="formMessage" role="alert" hidden></div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-lg" id="btnSubmitLookup">
+                                    <i class="fa-solid fa-magnifying-glass"></i> TRA CỨU HỒ SƠ KHÁM
+                                </button>
+                                <button type="reset" class="btn btn-outline" id="btnResetLookup">
+                                    <i class="fa-solid fa-rotate"></i> Làm mới
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="security-assurance">
+                        <div class="sec-item">
+                            <i class="fa-solid fa-server text-accent"></i>
+                            <span>Xác thực trên máy chủ: trình duyệt chỉ nhận đúng hồ sơ của bạn</span>
+                        </div>
+                        <div class="sec-item">
+                            <i class="fa-solid fa-lock text-blue"></i>
+                            <span>Tự động khóa tạm khi nhập sai nhiều lần</span>
+                        </div>
+                        <div class="sec-item">
+                            <i class="fa-solid fa-key text-green"></i>
+                            <span>Mã PIN cá nhân do bộ phận Nhân sự cấp riêng cho từng người</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-container container" id="resultContainer" hidden>
+                <div class="result-card success-result" id="resultSuccessCard">
+                    <div class="result-header">
+                        <div class="status-badge valid">
+                            <i class="fa-solid fa-circle-check"></i> XÁC THỰC THÀNH CÔNG
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn btn-sm btn-outline" id="btnToggleMask" type="button">
+                                <i class="fa-solid fa-eye" id="iconMask"></i> <span id="textMask">Hiện đầy đủ mã nhân viên</span>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" id="btnPrintResult" type="button">
+                                <i class="fa-solid fa-print"></i> In kết quả
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" id="btnCloseResult" type="button">
+                                <i class="fa-solid fa-xmark"></i> Đóng hồ sơ
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="receipt-box" id="printableReceipt">
+                        <div class="receipt-header">
+                            <div class="receipt-logo">
+                                <i class="fa-solid fa-hospital-user"></i>
+                                <span>PHIẾU KẾT QUẢ KHÁM SỨC KHỎE ĐỊNH KỲ</span>
+                            </div>
+                            <div class="receipt-meta">
+                                <span class="rec-no">MÃ NV: <strong id="resEmployeeCode"></strong></span>
+                                <span class="rec-date" id="resStt"></span>
+                            </div>
+                        </div>
+
+                        <div class="person-profile">
+                            <div class="profile-avatar">
+                                <i class="fa-solid fa-user-doctor"></i>
+                            </div>
+                            <div class="profile-main">
+                                <h2 class="person-name" id="resFullName"></h2>
+                                <p class="person-sub">
+                                    Giới tính: <strong id="resGender"></strong> |
+                                    Ngày sinh: <strong id="resDob"></strong> |
+                                    Chức danh: <strong id="resJobTitle"></strong>
+                                </p>
+                                <p class="person-sub">
+                                    Bộ phận: <strong id="resDepartment"></strong> |
+                                    Đơn vị: <strong id="resUnitName"></strong>
+                                </p>
+                            </div>
+                            <div class="profile-stamp">
+                                <div class="official-seal">
+                                    <i class="fa-solid fa-certificate"></i>
+                                    <span id="resHealthClassSeal"></span>
+                                    <small>KSK</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="section-title"><i class="fa-solid fa-heart-pulse text-blue"></i> 1. THỂ LỰC VÀ LÂM SÀNG</h4>
+                        <div class="receipt-grid">
+                            <div class="info-cell">
+                                <span class="cell-label">Chiều cao / Cân nặng</span>
+                                <span class="cell-value" id="resBodyStat"></span>
+                            </div>
+                            <div class="info-cell">
+                                <span class="cell-label">Thể lực / Huyết áp</span>
+                                <span class="cell-value" id="resPhysicalBp"></span>
+                            </div>
+                            <div class="info-cell">
+                                <span class="cell-label">Thị lực (Phải / Trái)</span>
+                                <span class="cell-value" id="resVision"></span>
+                            </div>
+                            <div class="info-cell">
+                                <span class="cell-label">Khám Chuyên Khoa (TMH / RHM)</span>
+                                <span class="cell-value" id="resEntDental"></span>
+                            </div>
+                            <div class="info-cell full">
+                                <span class="cell-label">Nội Da liễu / Ngoại khoa / X-Quang / Phụ khoa</span>
+                                <span class="cell-value" id="resClinicalOther"></span>
+                            </div>
+                            <div class="info-cell full highlight-box">
+                                <span class="cell-label"><i class="fa-solid fa-wave-square"></i> SIÊU ÂM Ổ BỤNG</span>
+                                <span class="details-content" id="resUltrasound"></span>
+                            </div>
+                        </div>
+
+                        <h4 class="section-title"><i class="fa-solid fa-vial text-accent"></i> 2. CHỈ SỐ XÉT NGHIỆM MÁU & NƯỚC TIỂU</h4>
+                        <div class="lab-table-container">
+                            <table class="lab-table">
+                                <thead>
+                                    <tr>
+                                        <th>XN CTM</th>
+                                        <th>XN Nước tiểu</th>
+                                        <th>Acid Uric</th>
+                                        <th>Creatinin</th>
+                                        <th>Glucose</th>
+                                        <th>Ure</th>
+                                        <th>SGOT</th>
+                                        <th>SGPT</th>
+                                        <th>Triglycerides</th>
+                                        <th>Cholesterol</th>
+                                        <th>GGT</th>
+                                        <th>Morphin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="labCtm"></td>
+                                        <td id="labUrine"></td>
+                                        <td id="labAcidUric"></td>
+                                        <td id="labCreatinin"></td>
+                                        <td id="labGlucose"></td>
+                                        <td id="labUre"></td>
+                                        <td id="labSgot"></td>
+                                        <td id="labSgpt"></td>
+                                        <td id="labTriglycerides"></td>
+                                        <td id="labCholesterol"></td>
+                                        <td id="labGgt"></td>
+                                        <td id="labMorphin"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4 class="section-title"><i class="fa-solid fa-user-check text-green"></i> 3. PHÂN LOẠI & KẾT LUẬN</h4>
+                        <div class="receipt-grid">
+                            <div class="info-cell">
+                                <span class="cell-label">Phân Loại Sức Khỏe</span>
+                                <span class="status-tag tag-success" id="resHealthClass"></span>
+                            </div>
+                            <div class="info-cell">
+                                <span class="cell-label">Kết Luận</span>
+                                <span class="cell-value" id="resConclusion"></span>
+                            </div>
+                            <div class="info-cell full highlight-accent-box">
+                                <span class="cell-label"><i class="fa-solid fa-comment-medical"></i> TƯ VẤN CỦA BÁC SĨ</span>
+                                <div class="details-content" id="resMedicalAdvice"></div>
+                            </div>
+                        </div>
+
+                        <div class="receipt-footer">
+                            <p><i class="fa-solid fa-circle-info"></i> Thông tin sức khỏe là dữ liệu cá nhân nhạy cảm. Vui lòng không chia sẻ và đóng hồ sơ sau khi xem.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <footer class="app-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <i class="fa-solid fa-hospital-user text-accent"></i>
+                <span>KSK &copy; 2026</span>
+            </div>
+            <p class="footer-note">Hệ thống tra cứu kết quả khám sức khỏe định kỳ người lao động</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

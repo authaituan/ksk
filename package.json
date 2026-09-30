@@ -1,0 +1,15 @@
+{
+  "name": "ksk",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Hệ thống tra cứu kết quả khám sức khỏe định kỳ - chạy trên máy chủ nội bộ",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node server/server.js",
+    "import": "node server/cli.js import",
+    "reset-pin": "node server/cli.js reset-pin",
+    "unlock": "node server/cli.js unlock",
+    "stats": "node server/cli.js stats",
+    "test": "node --test"
+  }
+}

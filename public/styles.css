@@ -1,15 +1,15 @@
 /* ==========================================================================
-   VNPOSTAL WORKER HEALTH LOOKUP SYSTEM - FLAT MODERN CSS
+   KSK - HE THONG TRA CUU KET QUA KHAM SUC KHOE - STYLES
    ========================================================================== */
 
 :root {
-    --vnpost-yellow: #F58B13;
-    --vnpost-yellow-hover: #E07A06;
-    --vnpost-yellow-light: #FFF8EE;
-    --vnpost-blue: #00529C;
-    --vnpost-blue-dark: #003C73;
-    --vnpost-blue-light: #EBF3FA;
-    --vnpost-accent: #0072CE;
+    --brand-accent: #14B8A6;
+    --brand-accent-hover: #0D9488;
+    --brand-accent-light: #F0FDFA;
+    --brand-primary: #1E40AF;
+    --brand-primary-dark: #1E3A8A;
+    --brand-primary-light: #EFF6FF;
+    --brand-secondary: #2563EB;
     
     --bg-main: #F8FAFC;
     --card-bg: #FFFFFF;
@@ -69,18 +69,18 @@ code {
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.9em;
-    color: var(--vnpost-blue-dark);
+    color: var(--brand-primary-dark);
 }
 
 /* Header & Navigation */
 .app-header {
-    background-color: var(--vnpost-blue);
+    background-color: var(--brand-primary);
     color: #FFFFFF;
     position: sticky;
     top: 0;
     z-index: 100;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-    border-bottom: 4px solid var(--vnpost-yellow);
+    border-bottom: 4px solid var(--brand-accent);
 }
 
 .header-container {
@@ -103,8 +103,8 @@ code {
 .logo-icon {
     width: 44px;
     height: 44px;
-    background-color: var(--vnpost-yellow);
-    color: var(--vnpost-blue-dark);
+    background-color: var(--brand-accent);
+    color: var(--brand-primary-dark);
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
@@ -125,8 +125,8 @@ code {
     line-height: 1.2;
 }
 
-.badge-post {
-    background-color: var(--vnpost-yellow);
+.badge-brand {
+    background-color: var(--brand-accent);
     color: #000;
     padding: 1px 6px;
     border-radius: 4px;
@@ -167,8 +167,8 @@ code {
 }
 
 .nav-btn.active {
-    background-color: var(--vnpost-yellow);
-    color: var(--vnpost-blue-dark);
+    background-color: var(--brand-accent);
+    color: var(--brand-primary-dark);
     box-shadow: var(--shadow-sm);
 }
 
@@ -211,7 +211,7 @@ code {
    ========================================================================== */
 .hero-section {
     position: relative;
-    background: linear-gradient(135deg, var(--vnpost-blue) 0%, #003566 100%);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, #172554 100%);
     padding: 50px 20px 70px;
     color: #FFFFFF;
     text-align: center;
@@ -247,8 +247,8 @@ code {
     align-items: center;
     gap: 8px;
     background-color: rgba(245, 139, 19, 0.15);
-    border: 1px solid var(--vnpost-yellow);
-    color: var(--vnpost-yellow);
+    border: 1px solid var(--brand-accent);
+    color: var(--brand-accent);
     padding: 6px 16px;
     border-radius: var(--radius-full);
     font-size: 0.85rem;
@@ -315,7 +315,7 @@ code {
 
 .switch-btn.active {
     background-color: var(--card-bg);
-    color: var(--vnpost-blue);
+    color: var(--brand-primary);
     box-shadow: var(--shadow-sm);
 }
 
@@ -380,7 +380,7 @@ textarea {
 
 .input-wrapper input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: var(--vnpost-blue);
+    border-color: var(--brand-primary);
     box-shadow: 0 0 0 3px rgba(0, 82, 156, 0.15);
 }
 
@@ -397,8 +397,8 @@ textarea {
 }
 
 .captcha-box {
-    background-color: var(--vnpost-blue-light);
-    border: 1px dashed var(--vnpost-blue);
+    background-color: var(--brand-primary-light);
+    border: 1px dashed var(--brand-primary);
     padding: 10px 18px;
     border-radius: var(--radius-md);
     display: flex;
@@ -411,9 +411,9 @@ textarea {
     font-size: 1.4rem;
     font-weight: 800;
     letter-spacing: 6px;
-    color: var(--vnpost-blue-dark);
+    color: var(--brand-primary-dark);
     user-select: none;
-    background: linear-gradient(45deg, var(--vnpost-blue-dark), var(--vnpost-accent));
+    background: linear-gradient(45deg, var(--brand-primary-dark), var(--brand-secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -421,7 +421,7 @@ textarea {
 .btn-icon {
     background: transparent;
     border: none;
-    color: var(--vnpost-blue);
+    color: var(--brand-primary);
     cursor: pointer;
     font-size: 1rem;
 }
@@ -458,24 +458,24 @@ textarea {
 }
 
 .btn-primary {
-    background-color: var(--vnpost-yellow);
-    color: var(--vnpost-blue-dark);
-    border-color: var(--vnpost-yellow);
+    background-color: var(--brand-accent);
+    color: var(--brand-primary-dark);
+    border-color: var(--brand-accent);
     box-shadow: 0 4px 12px rgba(245, 139, 19, 0.3);
 }
 
 .btn-primary:hover {
-    background-color: var(--vnpost-yellow-hover);
-    border-color: var(--vnpost-yellow-hover);
+    background-color: var(--brand-accent-hover);
+    border-color: var(--brand-accent-hover);
 }
 
 .btn-secondary {
-    background-color: var(--vnpost-blue);
+    background-color: var(--brand-primary);
     color: #FFFFFF;
 }
 
 .btn-secondary:hover {
-    background-color: var(--vnpost-blue-dark);
+    background-color: var(--brand-primary-dark);
 }
 
 .btn-success {
@@ -528,8 +528,8 @@ textarea {
     color: rgba(255, 255, 255, 0.9);
 }
 
-.text-yellow { color: var(--vnpost-yellow) !important; }
-.text-blue { color: var(--vnpost-accent) !important; }
+.text-accent { color: var(--brand-accent) !important; }
+.text-blue { color: var(--brand-secondary) !important; }
 .text-green { color: var(--success-color) !important; }
 .text-white { color: #FFFFFF !important; }
 
@@ -582,7 +582,7 @@ textarea {
 /* Printable Medical Examination Receipt Box */
 .receipt-box {
     background-color: #FAFAFA;
-    border: 2px dashed var(--vnpost-blue);
+    border: 2px dashed var(--brand-primary);
     border-radius: var(--radius-md);
     padding: 28px;
 }
@@ -601,7 +601,7 @@ textarea {
     align-items: center;
     gap: 10px;
     font-weight: 800;
-    color: var(--vnpost-blue);
+    color: var(--brand-primary);
     font-size: 1.05rem;
 }
 
@@ -615,7 +615,7 @@ textarea {
 
 .rec-no {
     font-weight: 700;
-    color: var(--vnpost-blue-dark);
+    color: var(--brand-primary-dark);
 }
 
 .person-profile {
@@ -632,8 +632,8 @@ textarea {
 .profile-avatar {
     width: 60px;
     height: 60px;
-    background-color: var(--vnpost-blue-light);
-    color: var(--vnpost-blue);
+    background-color: var(--brand-primary-light);
+    color: var(--brand-primary);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -648,7 +648,7 @@ textarea {
 .person-name {
     font-size: 1.4rem;
     font-weight: 800;
-    color: var(--vnpost-blue-dark);
+    color: var(--brand-primary-dark);
     margin-bottom: 4px;
 }
 
@@ -659,9 +659,9 @@ textarea {
 }
 
 .official-seal {
-    border: 2px double var(--vnpost-yellow);
-    background-color: var(--vnpost-yellow-light);
-    color: var(--vnpost-yellow-hover);
+    border: 2px double var(--brand-accent);
+    background-color: var(--brand-accent-light);
+    color: var(--brand-accent-hover);
     padding: 8px 16px;
     border-radius: 8px;
     display: flex;
@@ -679,7 +679,7 @@ textarea {
 .section-title {
     font-size: 0.98rem;
     font-weight: 700;
-    color: var(--vnpost-blue-dark);
+    color: var(--brand-primary-dark);
     margin: 18px 0 10px;
     display: flex;
     align-items: center;
@@ -723,19 +723,19 @@ textarea {
 }
 
 .highlight-box {
-    background-color: var(--vnpost-blue-light);
+    background-color: var(--brand-primary-light);
     border-color: rgba(0, 82, 156, 0.3);
 }
 
-.highlight-yellow-box {
-    background-color: var(--vnpost-yellow-light);
+.highlight-accent-box {
+    background-color: var(--brand-accent-light);
     border-color: rgba(245, 139, 19, 0.4);
 }
 
 .details-content {
     font-size: 0.98rem;
     font-weight: 600;
-    color: var(--vnpost-blue-dark);
+    color: var(--brand-primary-dark);
     margin-top: 4px;
 }
 
@@ -768,7 +768,7 @@ textarea {
     padding: 10px;
     border: 1px solid var(--border-color);
     font-weight: 600;
-    color: var(--vnpost-blue-dark);
+    color: var(--brand-primary-dark);
 }
 
 .status-tag {
@@ -864,7 +864,7 @@ textarea {
 .page-title {
     font-size: 1.8rem;
     font-weight: 800;
-    color: var(--vnpost-blue-dark);
+    color: var(--brand-primary-dark);
 }
 
 .page-subtitle {
@@ -907,8 +907,8 @@ textarea {
     color: #FFFFFF;
 }
 
-.bg-blue { background-color: var(--vnpost-blue); }
-.bg-yellow { background-color: var(--vnpost-yellow); color: var(--vnpost-blue-dark); }
+.bg-blue { background-color: var(--brand-primary); }
+.bg-accent { background-color: var(--brand-accent); color: var(--brand-primary-dark); }
 .bg-green { background-color: var(--success-color); }
 .bg-dark { background-color: var(--text-primary); }
 
@@ -955,8 +955,8 @@ textarea {
 }
 
 .badge-tag {
-    background-color: var(--vnpost-blue-light);
-    color: var(--vnpost-blue);
+    background-color: var(--brand-primary-light);
+    color: var(--brand-primary);
     padding: 4px 10px;
     border-radius: var(--radius-full);
     font-size: 0.78rem;
@@ -973,8 +973,8 @@ textarea {
 
 /* Dropzone Styling */
 .dropzone {
-    border: 2px dashed var(--vnpost-blue);
-    background-color: var(--vnpost-blue-light);
+    border: 2px dashed var(--brand-primary);
+    background-color: var(--brand-primary-light);
     border-radius: var(--radius-md);
     padding: 36px 20px;
     text-align: center;
@@ -984,12 +984,12 @@ textarea {
 
 .dropzone:hover {
     background-color: #E2EFF9;
-    border-color: var(--vnpost-yellow);
+    border-color: var(--brand-accent);
 }
 
 .dropzone-icon {
     font-size: 2.8rem;
-    color: var(--vnpost-blue);
+    color: var(--brand-primary);
     margin-bottom: 10px;
 }
 
@@ -1104,11 +1104,11 @@ textarea {
 }
 
 .advisory-card.highlight-border {
-    border-left: 5px solid var(--vnpost-yellow);
+    border-left: 5px solid var(--brand-accent);
 }
 
-.bg-light-yellow {
-    background-color: var(--vnpost-yellow-light);
+.bg-light-accent {
+    background-color: var(--brand-accent-light);
     border-color: rgba(245, 139, 19, 0.4);
 }
 
@@ -1132,7 +1132,7 @@ textarea {
 .adv-header h3 {
     font-size: 1.15rem;
     font-weight: 700;
-    color: var(--vnpost-blue-dark);
+    color: var(--brand-primary-dark);
 }
 
 .adv-body p {
@@ -1142,8 +1142,8 @@ textarea {
 }
 
 .rule-box {
-    background-color: var(--vnpost-blue-light);
-    border-left: 4px solid var(--vnpost-blue);
+    background-color: var(--brand-primary-light);
+    border-left: 4px solid var(--brand-primary);
     padding: 12px 16px;
     border-radius: var(--radius-sm);
     margin-bottom: 16px;
@@ -1223,7 +1223,7 @@ textarea {
 }
 
 .modal-header {
-    background-color: var(--vnpost-blue);
+    background-color: var(--brand-primary);
     color: #FFFFFF;
     padding: 18px 24px;
     display: flex;
@@ -1297,11 +1297,11 @@ textarea {
 
 /* Footer */
 .app-footer {
-    background-color: var(--vnpost-blue-dark);
+    background-color: var(--brand-primary-dark);
     color: #FFFFFF;
     padding: 30px 0;
     margin-top: auto;
-    border-top: 4px solid var(--vnpost-yellow);
+    border-top: 4px solid var(--brand-accent);
 }
 
 .footer-content {
@@ -1383,3 +1383,17 @@ textarea {
         grid-column: span 1;
     }
 }
+
+/* ==========================================================================
+   PHASE 1 ADDITIONS
+   ========================================================================== */
+[hidden] { display: none !important; }
+.form-message {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background-color: var(--danger-bg);
+    color: var(--danger-color);
+    font-size: 0.9rem;
+}
+.btn[disabled] { opacity: 0.6; cursor: wait; }
