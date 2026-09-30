@@ -12,7 +12,9 @@ Người lao động tự tra cứu kết quả khám sức khỏe của mình. 
 | Chống dò | Sai `MAX_FAILS` lần (mặc định 5) thì khóa mã đó `LOCK_MINUTES` phút (mặc định 30). Mỗi IP được tối đa `IP_MAX_REQUESTS` lần (mặc định 20) trong `IP_WINDOW_MINUTES` phút (mặc định 15) | `handleLookup()`, `ipRateLimited()` |
 | Không lộ lý do sai | Sai mã, sai ngày sinh hay sai PIN đều nhận cùng một thông báo. Thời gian phản hồi được làm tương đương | `MSG_FAIL`, `DUMMY_HASH` |
 | Nhật ký truy cập | `data/access.log` ghi thời gian, IP, mã NV và kết quả. **Không** ghi PIN, ngày sinh hay dữ liệu sức khỏe | `logAccess()` |
-| Chống XSS | Dữ liệu chỉ được gán qua `textContent`. Có CSP chặn script lạ | `public/app.js`, `SECURITY_HEADERS` |
+| Chống XSS | Dữ liệu chỉ được gán qua `textContent`. Có CSP chặn script lạ và style nội tuyến (chỉ cho phép đúng đoạn style cố định của html2canvas theo mã băm) | `public/app.js`, `SECURITY_HEADERS` |
+| Che thông tin trên màn hình | Mặc định che họ tên, ngày sinh (chỉ giữ năm), mã HRM, bộ phận, đơn vị. Nút *Hiện đầy đủ thông tin* để mở | `public/app.js` → `updateMask()` |
+| Tải PDF | A4 ngang, tạo ngay trên trình duyệt (không gửi dữ liệu đi đâu). PDF theo đúng trạng thái ẩn/hiện đang xem | `downloadPdf()` |
 | Không tự bịa chỉ số | Ô trống hiển thị "—". Dòng thiếu hoặc sai trường bắt buộc thì **cả file bị từ chối** | `server/records.js` |
 
 ## Trang quản trị `/admin/` (Phase 2)
@@ -138,6 +140,6 @@ node --test
 ## Lưu ý vận hành
 
 - Thư mục `data/` chứa dữ liệu sức khỏe thật. Cần giới hạn quyền truy cập thư mục trên máy chủ, mã hóa ổ đĩa (BitLocker) và sao lưu định kỳ.
-- Trang có dùng font và icon từ CDN (Google Fonts, cdnjs). Nếu máy trạm không ra Internet được, trang vẫn chạy nhưng không có icon.
+- Icon (Font Awesome) và thư viện tạo PDF (jsPDF, html2canvas) nằm sẵn trong `public/vendor/` (giấy phép MIT/OFL/CC-BY, kèm file LICENSE), nên chạy được cả khi không có Internet. Chỉ font chữ Inter lấy từ Google Fonts; nếu mất mạng, trang dùng font hệ thống.
 - Khởi động lại máy chủ thì mọi người quản trị phải đăng nhập lại, vì phiên làm việc được giữ trong bộ nhớ.
 - Nâng cấp từ Phase 1: CSDL cũ được tự nâng cấp khi khởi động. Nhân viên đã có PIN từ Phase 1 vẫn giữ nguyên PIN.

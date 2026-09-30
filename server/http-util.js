@@ -7,8 +7,9 @@ const SECURITY_HEADERS = {
     'Content-Security-Policy': [
         "default-src 'self'",
         "script-src 'self'",
-        "style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
-        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
+        // Mã băm: đoạn <style> cố định do html2canvas chèn khi tạo PDF
+    "style-src 'self' https://fonts.googleapis.com 'sha256-UP0QZg7irvSMvOBz9mH2PIIE28+57UiavRfeVea0l3g='",
+        "font-src 'self' https://fonts.gstatic.com",
         "img-src 'self' data:",
         "connect-src 'self'",
         "frame-ancestors 'none'",
@@ -28,7 +29,9 @@ const MIME = {
     '.svg': 'image/svg+xml',
     '.png': 'image/png',
     '.ico': 'image/x-icon',
-    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    '.woff2': 'font/woff2',
+    '.txt': 'text/plain; charset=utf-8'
 };
 
 /** Bỏ tiền tố IPv4-mapped (::ffff:192.168.1.5 -> 192.168.1.5). */

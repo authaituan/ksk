@@ -85,6 +85,22 @@ test('static: index served with CSP; data dir and traversal not reachable', asyn
     }
 });
 
+test('thư viện PDF và icon được phục vụ nội bộ (không cần Internet); CSP chỉ mở đúng mã băm của html2canvas', async () => {
+    for (const [p, type] of [['/vendor/jspdf.umd.min.js', /javascript/], ['/vendor/html2canvas.min.js', /javascript/],
+        ['/vendor/fontawesome/css/all.min.css', /css/], ['/vendor/fontawesome/webfonts/fa-solid-900.woff2', /font\/woff2/]]) {
+        const res = await fetch(base + p);
+        assert.strictEqual(res.status, 200, p);
+        assert.match(res.headers.get('content-type'), type, p);
+    }
+    const csp = (await fetch(base + '/')).headers.get('content-security-policy');
+    assert.match(csp, /style-src 'self' https:\/\/fonts\.googleapis\.com 'sha256-/);
+    assert.ok(!csp.includes('unsafe-inline'));
+    const html = await (await fetch(base + '/')).text();
+    assert.ok(!html.includes('cdnjs'), 'không còn phụ thuộc CDN icon');
+    assert.ok(html.includes('btnDownloadPdf') && !html.includes('btnPrintResult'));
+    assert.ok(html.includes('MÃ HRM') && !html.includes('<small>KSK</small>'));
+});
+
 test('access log records outcome but never pin or dob', () => {
     const log = fs.readFileSync(path.join(process.env.KSK_DATA_DIR, 'access.log'), 'utf8');
     assert.match(log, /"outcome":"success"/);

@@ -1397,3 +1397,41 @@ textarea {
     font-size: 0.9rem;
 }
 .btn[disabled] { opacity: 0.6; cursor: wait; }
+
+/* ==========================================================================
+   BỐ CỤC PDF (A4 ngang) - dựng ngoài màn hình rồi chụp thành ảnh
+   ========================================================================== */
+.pdf-stage {
+    position: fixed;
+    left: -20000px;
+    top: 0;
+    width: 1400px;
+    background: #fff;
+    pointer-events: none;
+}
+.receipt-box.pdf-mode {
+    border: none;
+    border-radius: 0;
+    background: #fff;
+    padding: 0;
+}
+.pdf-mode .pdf-block { background: #fff; padding: 2px 4px; }
+.pdf-mode .receipt-header { margin-bottom: 12px; }
+.pdf-mode .person-profile { margin-bottom: 4px; }
+.pdf-mode .section-title { margin: 6px 0 8px; }
+.pdf-mode .receipt-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 4px;
+}
+.pdf-mode .info-cell { padding: 10px 14px; }
+.pdf-mode .info-cell.full { grid-column: span 2; }
+/* Mục 3: Phân loại | Kết luận (rộng) / Tư vấn (hết dòng) */
+.pdf-mode .pdf-block:last-child .info-cell:nth-child(2) { grid-column: span 3; }
+.pdf-mode .pdf-block:last-child .info-cell.full { grid-column: span 4; }
+/* Bảng xét nghiệm: 12 cột chia đều, luôn nằm trong bề rộng trang */
+.pdf-mode .lab-table-container { overflow: visible; margin-bottom: 4px; }
+.pdf-mode .lab-table { table-layout: fixed; width: 100%; font-size: 14px; }
+.pdf-mode .lab-table th { white-space: normal; padding: 8px 4px; font-size: 13px; }
+.pdf-mode .lab-table td { padding: 10px 4px; word-break: break-word; }
+.pdf-mode .receipt-footer { margin-top: 10px; padding-top: 10px; }
