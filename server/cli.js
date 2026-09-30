@@ -5,7 +5,7 @@
  *
  *   node server/cli.js add-admin <tên> [admin|yte|nhansu]   Tạo tài khoản quản trị
  *   node server/cli.js reset-admin-password <tên>          Cấp lại mật khẩu tạm
- *   node server/cli.js import <file.csv>                   Import/cập nhật danh sách khám
+ *   node server/cli.js import <file.xlsx>                  Import/cập nhật danh sách khám
  *   node server/cli.js issue-pins                          Cấp PIN cho người chưa có PIN
  *   node server/cli.js reset-pin <mã NV>                   Cấp lại PIN (và mở khóa)
  *   node server/cli.js unlock <mã NV>                      Mở khóa tra cứu
@@ -14,24 +14,21 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const db = require('./db');
-const { csvToRecords } = require('./records');
-
-function csvCell(v) {
-    const s = String(v ?? '');
-    return /[",;\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-}
+const { fileToRecords } = require('./records');
+const KskXlsx = require('../admin-ui/xlsx.js');
 
 function fail(message) {
     console.error(message);
     process.exitCode = 1;
 }
 
-function writePinFile(issued) {
+async function writePinFile(issued) {
     const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const out = path.join(db.DATA_DIR, `pins-${stamp}.csv`);
-    const header = ['mã_nhân_viên', 'họ_và_tên', 'bộ_phận', 'đơn_vị', 'pin'];
-    const lines = [header.join(','), ...issued.map((p) => [p.employee_code, p.full_name, p.department, p.unit_name, p.pin].map(csvCell).join(','))];
-    fs.writeFileSync(out, '﻿' + lines.join('\r\n') + '\r\n', { mode: 0o600 });
+    const out = path.join(db.DATA_DIR, `pins-${stamp}.xlsx`);
+    const rows = [['Mã nhân viên', 'Họ và tên', 'Bộ phận', 'Đơn vị', 'Chức danh', 'PIN'],
+        ...issued.map((p) => [p.employee_code, p.full_name, p.department, p.unit_name, p.job_title, p.pin])];
+    const blob = KskXlsx.build('PIN', rows, [14, 28, 18, 22, 22, 10]);
+    fs.writeFileSync(out, Buffer.from(await blob.arrayBuffer()), { mode: 0o600 });
     return out;
 }
 
@@ -56,7 +53,7 @@ function cmdResetAdminPassword(username) {
 
 function cmdImport(file) {
     if (!file) return usage();
-    const { records, errors } = csvToRecords(fs.readFileSync(file, 'utf8'));
+    const { records, errors } = fileToRecords(fs.readFileSync(file));
     if (errors.length) {
         console.error(`Không import: có ${errors.length} lỗi, cần sửa file rồi chạy lại.`);
         errors.slice(0, 50).forEach((e) => console.error('  - ' + e));
@@ -69,10 +66,10 @@ function cmdImport(file) {
     if (inserted) console.log(`Nhân viên mới chưa có PIN. Cấp PIN tại trang /admin/ (vai trò Nhân sự) hoặc: node server/cli.js issue-pins`);
 }
 
-function cmdIssuePins() {
+async function cmdIssuePins() {
     const issued = db.issueMissingPins();
     if (!issued.length) return console.log('Không có nhân viên nào đang chờ cấp PIN.');
-    const out = writePinFile(issued);
+    const out = await writePinFile(issued);
     console.log(`Đã cấp PIN cho ${issued.length} nhân viên -> ${out}`);
     console.log('LƯU Ý: phát PIN riêng cho từng người, sau đó XÓA file này.');
 }
@@ -96,7 +93,7 @@ function usage() {
     console.log(`Cách dùng:
   node server/cli.js add-admin <tên_đăng_nhập> [admin|yte|nhansu]
   node server/cli.js reset-admin-password <tên_đăng_nhập>
-  node server/cli.js import <file.csv>
+  node server/cli.js import <file.xlsx>
   node server/cli.js issue-pins
   node server/cli.js reset-pin <mã_nhân_viên>
   node server/cli.js unlock <mã_nhân_viên>
@@ -109,7 +106,7 @@ switch (cmd) {
     case 'add-admin': cmdAddAdmin(arg1, arg2); break;
     case 'reset-admin-password': cmdResetAdminPassword(arg1); break;
     case 'import': cmdImport(arg1); break;
-    case 'issue-pins': cmdIssuePins(); break;
+    case 'issue-pins': cmdIssuePins().catch((err) => fail(err.message)); break;
     case 'reset-pin': cmdResetPin(arg1); break;
     case 'unlock': cmdUnlock(arg1); break;
     case 'stats': console.log(db.stats()); break;

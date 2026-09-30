@@ -15,7 +15,8 @@ const db = require('../server/db');
 const { parseAllowList } = require('../server/admin');
 const { start } = require('../server/server');
 
-const csv = fs.readFileSync(path.join(__dirname, '..', 'sample_database.csv'), 'utf8');
+const template = fs.readFileSync(path.join(__dirname, '..', 'admin-ui', 'mau_import_ksk.xlsx'));
+const badExcel = fs.readFileSync(path.join(__dirname, 'fixtures', 'excel_general_format.xlsx'));
 let server, base;
 
 test.before(async () => {
@@ -35,7 +36,7 @@ function client() {
         if (withCsrf && csrf && method !== 'GET') headers['X-CSRF-Token'] = csrf;
         let payload;
         if (body !== undefined) {
-            headers['Content-Type'] = raw ? 'text/csv' : 'application/json';
+            headers['Content-Type'] = raw ? 'application/octet-stream' : 'application/json';
             payload = raw ? body : JSON.stringify(body);
         }
         const res = await fetch(`${base}/admin/api/${route}`, { method, headers, body: payload });
@@ -88,23 +89,32 @@ test('wrong password -> 401, locked after 5 fails', async () => {
 
 test('no session -> 401; missing CSRF header -> 403', async () => {
     assert.strictEqual((await client().call('GET', 'employees')).status, 401);
-    const r = await yte.call('POST', 'import?mode=preview', csv, { raw: true, withCsrf: false });
+    const r = await yte.call('POST', 'import?mode=preview', template, { raw: true, withCsrf: false });
     assert.strictEqual(r.status, 403);
 });
 
 test('yte: preview then commit import; cannot issue PINs or manage users', async () => {
-    const bad = await yte.call('POST', 'import?mode=preview', csv.replace('01/01/1990', '31/02/1990'), { raw: true });
+    const bad = await yte.call('POST', 'import?mode=preview', badExcel, { raw: true });
     assert.strictEqual(bad.status, 200);
     assert.strictEqual(bad.data.errors.length, 1);
-    assert.strictEqual((await yte.call('POST', 'import?mode=commit', csv.replace('01/01/1990', '31/02/1990'), { raw: true })).status, 400);
+    assert.match(bad.data.errors[0], /^Dòng 4:/);
+    assert.strictEqual((await yte.call('POST', 'import?mode=commit', badExcel, { raw: true })).status, 400);
+    const csvFile = await yte.call('POST', 'import?mode=preview', Buffer.from('stt,họ_và_tên\n1,A'), { raw: true });
+    assert.match(csvFile.data.errors[0], /Chỉ nhận file Excel \.xlsx/);
 
-    const pre = await yte.call('POST', 'import?mode=preview', csv, { raw: true });
+    const pre = await yte.call('POST', 'import?mode=preview', template, { raw: true });
     assert.deepStrictEqual([pre.data.valid_count, pre.data.inserted, pre.data.errors.length], [3, 3, 0]);
-    const done = await yte.call('POST', 'import?mode=commit', csv, { raw: true });
+    const done = await yte.call('POST', 'import?mode=commit', template, { raw: true });
     assert.deepStrictEqual(done.data, { inserted: 3, updated: 0 });
 
     assert.strictEqual((await yte.call('POST', 'pins/issue-missing', {})).status, 403);
     assert.strictEqual((await yte.call('GET', 'users')).status, 403);
+});
+
+test('file mẫu Excel tải được từ trang quản trị', async () => {
+    const tpl = await fetch(`${base}/admin/mau_import_ksk.xlsx`);
+    assert.strictEqual(tpl.status, 200);
+    assert.match(tpl.headers.get('content-type'), /spreadsheetml/);
 });
 
 test('employee without PIN cannot look up', async () => {
@@ -139,7 +149,7 @@ test('nhansu: issue PINs once, reset PIN, unlock; cannot import', async () => {
     const reset = await nhansu.call('POST', 'employees/reset-pin', { employee_code: '00000002' });
     assert.strictEqual(reset.data.issued[0].employee_code, '00000002');
     assert.strictEqual((await nhansu.call('POST', 'employees/unlock', { employee_code: '00000002' })).status, 200);
-    assert.strictEqual((await nhansu.call('POST', 'import?mode=preview', csv, { raw: true })).status, 403);
+    assert.strictEqual((await nhansu.call('POST', 'import?mode=preview', template, { raw: true })).status, 403);
 });
 
 test('admin: create, disable (kills session), cannot disable last admin or self', async () => {

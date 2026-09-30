@@ -65,7 +65,7 @@ function showFormMessage(message) {
    -------------------------------------------------------------------------- */
 function validateInput(code, dob, pin) {
     if (!/^[A-Za-z0-9]{1,20}$/.test(code)) return 'Mã nhân viên không hợp lệ.';
-    if (!/^\d{1,2}[/-]\d{1,2}[/-]\d{4}$/.test(dob)) return 'Ngày sinh phải có dạng DD/MM/YYYY.';
+    if (!/^\d{1,2}[/.-]\d{1,2}[/.-]\d{4}$/.test(dob) && !/^\d{8}$/.test(dob)) return 'Ngày sinh nhập dạng 01/01/1990 hoặc 01011990.';
     if (!/^\d{6}$/.test(pin)) return 'Mã PIN gồm đúng 6 chữ số.';
     return '';
 }
@@ -175,6 +175,12 @@ function closeResult() {
         if (node.children.length === 0) node.textContent = '';
     });
 }
+
+/** 01011990 -> 01/01/1990 khi rời ô nhập (máy chủ cũng chấp nhận cả hai dạng). */
+el.inputDob.addEventListener('blur', () => {
+    const v = el.inputDob.value.trim();
+    if (/^\d{8}$/.test(v)) el.inputDob.value = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`;
+});
 
 el.form.addEventListener('submit', handleSubmit);
 el.form.addEventListener('reset', () => { showFormMessage(''); closeResult(); });

@@ -75,6 +75,9 @@
 
 .pin-code { font-family: ui-monospace, Consolas, monospace; font-size: 1.05rem; letter-spacing: 2px; }
 
+.help-list { font-size: 0.88rem; color: var(--text-secondary); padding-left: 20px; margin: 6px 0 10px; }
+.help-list li { margin: 3px 0; }
+
 .import-summary { display: flex; gap: 20px; flex-wrap: wrap; margin: 12px 0; }
 .error-list { color: var(--danger-color); font-size: 0.88rem; max-height: 260px; overflow: auto; padding-left: 20px; }
 

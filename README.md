@@ -13,7 +13,7 @@ Người lao động tự tra cứu kết quả khám sức khỏe của mình. 
 | Không lộ lý do sai | Sai mã, sai ngày sinh hay sai PIN đều nhận cùng một thông báo. Thời gian phản hồi được làm tương đương | `MSG_FAIL`, `DUMMY_HASH` |
 | Nhật ký truy cập | `data/access.log` ghi thời gian, IP, mã NV và kết quả. **Không** ghi PIN, ngày sinh hay dữ liệu sức khỏe | `logAccess()` |
 | Chống XSS | Dữ liệu chỉ được gán qua `textContent`. Có CSP chặn script lạ | `public/app.js`, `SECURITY_HEADERS` |
-| Không tự bịa chỉ số | Ô trống hiển thị "—". Dòng CSV thiếu hoặc sai trường bắt buộc thì **cả file bị từ chối** | `server/records.js` |
+| Không tự bịa chỉ số | Ô trống hiển thị "—". Dòng thiếu hoặc sai trường bắt buộc thì **cả file bị từ chối** | `server/records.js` |
 
 ## Trang quản trị `/admin/` (Phase 2)
 
@@ -60,7 +60,7 @@ node server/server.js            # mặc định cổng 8080
 
 ### Quy trình hằng kỳ
 
-1. **Y tế** đăng nhập `/admin/`, vào tab *Import dữ liệu*, chọn file CSV, bấm *Kiểm tra file*. Nếu không có lỗi thì bấm *Xác nhận import*. Nhân viên mới sẽ ở trạng thái "Chưa có PIN".
+1. **Y tế** đăng nhập `/admin/`, vào tab *Import dữ liệu*, chọn file Excel (theo mẫu), bấm *Kiểm tra file*. Nếu không có lỗi thì bấm *Xác nhận import*. Nhân viên mới sẽ ở trạng thái "Chưa có PIN".
 2. **Nhân sự** vào tab *Phát PIN*, bấm *Cấp PIN cho tất cả người chưa có PIN*. Sau đó bấm **Tải Excel** hoặc **In phiếu PIN** (A4, 2 phiếu/hàng, cắt theo đường kẻ). PIN chỉ hiển thị một lần.
 3. Khi người lao động quên PIN hoặc bị khóa, **Nhân sự** vào tab *Nhân viên*, tìm tên người đó, rồi bấm *Cấp lại PIN* hoặc *Mở khóa*.
 
@@ -91,28 +91,40 @@ Nếu không có HTTPS, ngày sinh và PIN đi qua mạng nội bộ ở dạng 
 ```bash
 node server/cli.js add-admin <tên> [admin|yte|nhansu]   # tạo tài khoản, in mật khẩu tạm
 node server/cli.js reset-admin-password <tên>          # quên mật khẩu quản trị
-node server/cli.js import <file.csv>                   # như tab Import
-node server/cli.js issue-pins                          # như tab Phát PIN, xuất ra data/pins-*.csv
+node server/cli.js import <file.xlsx>                  # như tab Import
+node server/cli.js issue-pins                          # như tab Phát PIN, xuất ra data/pins-*.xlsx
 node server/cli.js reset-pin <mã_NV>                   # cấp lại PIN, đồng thời mở khóa
 node server/cli.js unlock <mã_NV>                      # mở khóa tra cứu
 node server/cli.js stats                               # số hồ sơ / chưa có PIN / đang khóa
 ```
 
-Nếu dùng `issue-pins`, anh nhớ **xóa file `data/pins-*.csv`** sau khi đã phát PIN.
+Nếu dùng `issue-pins`, anh nhớ **xóa file `data/pins-*.xlsx`** sau khi đã phát PIN.
 
-## Định dạng CSV
+## File dữ liệu import
 
-- 37 cột, **khớp theo tên cột**, không theo vị trí. Xem `sample_database.csv` (chỉ chứa dữ liệu giả).
-- Dấu phân cách `,` hoặc `;` đều dùng được. Ô có dấu phẩy phải đặt trong ngoặc kép. File phải là UTF-8 (trong Excel chọn *CSV UTF-8*).
-- Bắt buộc có: `họ_và_tên`, `mã_nhân_viên` (chữ/số, tối đa 20 ký tự), `ngày_sinh` (DD/MM/YYYY).
+**Dùng file mẫu Excel `admin-ui/mau_import_ksk.xlsx`** (tải tại *Quản trị > Import dữ liệu > Tải file mẫu Excel*).
+
+- Mọi ô trong mẫu đã định dạng **Text**, nên Excel không tự đổi `00000001` thành `1`, thị lực `10/10` thành ngày `10-Oct`, hay đảo ngày/tháng của ngày sinh.
+- Cột được khớp **theo tên tiêu đề** (không phân biệt hoa/thường, dấu cách hay gạch dưới), thứ tự cột không quan trọng. Dòng tiêu đề có thể nằm dưới vài dòng tiêu đề/ghi chú.
+- Bắt buộc có: **Họ và tên**, **Mã nhân viên** (chữ/số, tối đa 20 ký tự), **Ngày sinh**. Ngày sinh nhập `01/01/1990` hoặc `01011990`. Ô kiểu "ngày" của Excel cũng được chuyển đúng.
+- Khi dán dữ liệu từ file khác vào mẫu, dùng **Dán đặc biệt > Giá trị** (`Ctrl+Alt+V` rồi `V`), để giữ định dạng Text.
+- Hệ thống **báo lỗi và không import gì cả** khi:
+  - Mã nhân viên bị Excel lưu dạng số (nguy cơ mất số 0 đầu).
+  - Một ô bị Excel tự đổi thành ngày (vd `10/10`).
+  - Ngày sinh sai, thiếu trường bắt buộc, hoặc trùng mã.
+  Thông báo lỗi ghi đúng số dòng trong Excel.
+- **Chỉ nhận file Excel `.xlsx`.** File `.csv` hoặc `.xls` đời cũ bị từ chối kèm hướng dẫn: mở bằng Excel rồi chọn *Lưu thành > Excel Workbook (*.xlsx)*.
+- File mẫu được tạo bằng `python tools/make_template.py` (cần `openpyxl`). Chỉ cần chạy lại khi muốn đổi mẫu.
 
 ## Cấu trúc thư mục
 
 ```
 public/        trang tra cứu: index.html, app.js, styles.css
-admin-ui/      trang quản trị: index.html, admin.js, admin.css, xlsx.js (tạo file Excel)
+admin-ui/      trang quản trị: index.html, admin.js, admin.css, xlsx.js (tạo file Excel),
+               mau_import_ksk.xlsx (file mẫu import)
 server/        server.js (HTTP + tra cứu), admin.js (API quản trị), db.js (SQLite, PIN, tài khoản),
-               records.js (đọc CSV), http-util.js (hàm dùng chung), cli.js (dòng lệnh)
+               records.js (đọc dữ liệu import), xlsx-reader.js (đọc file .xlsx), http-util.js, cli.js
+tools/         make_template.py (tạo lại file mẫu Excel)
 test/          test tự động: node --test
 data/          CSDL, log, file PIN (đã loại khỏi git, KHÔNG commit)
 ```

@@ -8,7 +8,7 @@ const $ = (id) => document.getElementById(id);
 
 let session = null;     // { username, role, role_label, permissions, must_change_password, csrf }
 let pinBatch = [];      // PIN vừa cấp, chỉ giữ trong bộ nhớ trang
-let importText = '';    // nội dung file CSV đang kiểm tra
+let importData = null;  // nội dung file (ArrayBuffer) đang kiểm tra
 let roleLabels = {};
 
 /* --------------------------------------------------------------------------
@@ -62,7 +62,7 @@ async function api(method, route, body, { raw = false } = {}) {
     if (method !== 'GET' && session) headers['X-CSRF-Token'] = session.csrf;
     let payload;
     if (body !== undefined) {
-        headers['Content-Type'] = raw ? 'text/csv; charset=utf-8' : 'application/json';
+        headers['Content-Type'] = raw ? 'application/octet-stream' : 'application/json';
         payload = raw ? body : JSON.stringify(body);
     }
     const res = await fetch(`/admin/api/${route}`, { method, headers, body: payload, credentials: 'same-origin', cache: 'no-store' });
@@ -227,25 +227,26 @@ async function unlock(e) {
    Import
    -------------------------------------------------------------------------- */
 $('importFile').addEventListener('change', () => {
-    importText = '';
+    importData = null;
     $('importResult').hidden = true;
     $('btnPreview').disabled = !$('importFile').files.length;
 });
 
-function readFileText(file) {
+function readFileBytes(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader.onerror = () => reject(reader.error);
-        reader.readAsText(file, 'utf-8');
+        reader.readAsArrayBuffer(file);
     });
 }
 
 $('btnPreview').addEventListener('click', async () => {
     const file = $('importFile').files[0];
     if (!file) return;
-    importText = await readFileText(file);
-    const r = await api('POST', 'import?mode=preview', importText, { raw: true });
+    if (file.size > 10 * 1024 * 1024) return toast('File quá lớn (tối đa 10 MB).', 'danger');
+    importData = await readFileBytes(file);
+    const r = await api('POST', 'import?mode=preview', importData, { raw: true });
     if (!r.ok) return toast(r.data.message || 'Không kiểm tra được file.', 'danger');
     const d = r.data;
     $('importSummary').replaceChildren(
@@ -262,15 +263,15 @@ $('btnPreview').addEventListener('click', async () => {
 });
 
 $('btnCommit').addEventListener('click', async () => {
-    if (!importText) return;
+    if (!importData) return;
     $('btnCommit').disabled = true;
-    const r = await api('POST', 'import?mode=commit', importText, { raw: true });
+    const r = await api('POST', 'import?mode=commit', importData, { raw: true });
     if (!r.ok) {
         $('btnCommit').disabled = false;
         return toast(r.data.message || 'Import thất bại.', 'danger');
     }
     toast(`Import xong: ${r.data.inserted} mới, ${r.data.updated} cập nhật.`);
-    importText = '';
+    importData = null;
     $('importFile').value = '';
     $('btnPreview').disabled = true;
     $('importResult').hidden = true;

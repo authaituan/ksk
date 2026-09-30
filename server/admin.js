@@ -21,8 +21,8 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 
 const db = require('./db');
-const { csvToRecords, EMPLOYEE_CODE_RE } = require('./records');
-const { clientIp, sendJson, sendText, readBody, readJsonBody, serveStaticFrom, appendLog } = require('./http-util');
+const { fileToRecords, EMPLOYEE_CODE_RE } = require('./records');
+const { clientIp, sendJson, sendText, readBodyBuffer, readJsonBody, serveStaticFrom, appendLog } = require('./http-util');
 
 const ADMIN_UI_DIR = path.join(__dirname, '..', 'admin-ui');
 const ADMIN_LOG = path.join(db.DATA_DIR, 'admin.log');
@@ -254,8 +254,8 @@ function createAdminHandler({ trustProxy = false, allowedIps = '127.0.0.1,::1', 
 
             case 'POST import': {
                 if (!can('import')) return deny();
-                const text = await readBody(req, MAX_IMPORT_BYTES);
-                const { records, errors } = csvToRecords(text);
+                // Chỉ nhận file Excel .xlsx
+                const { records, errors } = fileToRecords(await readBodyBuffer(req, MAX_IMPORT_BYTES));
                 const counts = db.previewImport(records);
                 if (url.searchParams.get('mode') !== 'commit') {
                     return sendJson(res, 200, { valid_count: records.length, ...counts, errors });

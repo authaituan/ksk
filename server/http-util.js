@@ -27,7 +27,8 @@ const MIME = {
     '.js': 'text/javascript; charset=utf-8',
     '.svg': 'image/svg+xml',
     '.png': 'image/png',
-    '.ico': 'image/x-icon'
+    '.ico': 'image/x-icon',
+    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 };
 
 /** Bỏ tiền tố IPv4-mapped (::ffff:192.168.1.5 -> 192.168.1.5). */
@@ -59,7 +60,8 @@ function sendText(res, status, text, extraHeaders = {}) {
     res.end(text);
 }
 
-function readBody(req, maxBytes) {
+/** Đọc toàn bộ body thành Buffer (giới hạn maxBytes). */
+function readBodyBuffer(req, maxBytes) {
     return new Promise((resolve, reject) => {
         let size = 0;
         const chunks = [];
@@ -72,9 +74,13 @@ function readBody(req, maxBytes) {
             }
             chunks.push(chunk);
         });
-        req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+        req.on('end', () => resolve(Buffer.concat(chunks)));
         req.on('error', reject);
     });
+}
+
+async function readBody(req, maxBytes) {
+    return (await readBodyBuffer(req, maxBytes)).toString('utf8');
 }
 
 async function readJsonBody(req, maxBytes = 2048) {
@@ -115,5 +121,5 @@ function appendLog(file, entry) {
 
 module.exports = {
     SECURITY_HEADERS, normalizeIp, clientIp, sendJson, sendText,
-    readBody, readJsonBody, serveStaticFrom, appendLog
+    readBody, readBodyBuffer, readJsonBody, serveStaticFrom, appendLog
 };

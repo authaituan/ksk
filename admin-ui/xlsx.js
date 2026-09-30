@@ -3,10 +3,12 @@
  * Mọi ô được ghi dạng chữ (inlineStr) để giữ số 0 đầu của mã nhân viên và PIN.
  *
  *   KskXlsx.download('pins.xlsx', 'PIN', [['Mã NV', 'PIN'], ['00000001', '012345']], [14, 10]);
+ *
+ * Dùng được cả trên trình duyệt (window.KskXlsx) và trong Node (require) cho CLI.
  */
 'use strict';
 
-window.KskXlsx = (function () {
+const KskXlsx = (function () {
     const enc = new TextEncoder();
 
     const CRC_TABLE = (() => {
@@ -138,3 +140,6 @@ window.KskXlsx = (function () {
 
     return { build, download };
 })();
+
+if (typeof module !== 'undefined' && module.exports) module.exports = KskXlsx;
+else window.KskXlsx = KskXlsx;

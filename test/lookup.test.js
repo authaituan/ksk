@@ -11,14 +11,14 @@ process.env.IP_MAX_REQUESTS = '1000';
 process.env.PORT = '0'; // cổng ngẫu nhiên, không đụng máy chủ thật
 
 const db = require('../server/db');
-const { csvToRecords, normalizeDob } = require('../server/records');
+const { fileToRecords, normalizeDob } = require('../server/records');
 const { start } = require('../server/server');
 
-const csv = fs.readFileSync(path.join(__dirname, '..', 'sample_database.csv'), 'utf8');
+const template = fs.readFileSync(path.join(__dirname, '..', 'admin-ui', 'mau_import_ksk.xlsx'));
 let server, base, pins;
 
 test.before(async () => {
-    const { records, errors } = csvToRecords(csv);
+    const { records, errors } = fileToRecords(template);
     assert.deepStrictEqual(errors, []);
     db.importRecords(records);
     pins = Object.fromEntries(db.issueMissingPins().map((p) => [p.employee_code, p.pin]));
@@ -30,22 +30,6 @@ test.after(() => server.close());
 
 const lookup = (body) => fetch(base + '/api/lookup', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-});
-
-test('CSV: quoted field with comma is kept in one column', () => {
-    const { records } = csvToRecords(csv);
-    assert.strictEqual(records[1].medical_advice, 'Khám mắt, đo độ cận định kỳ');
-    assert.strictEqual(records[1].blood_tests.morphin, 'ÂM TÍNH');
-});
-
-test('CSV: semicolon delimiter and invalid rows are rejected, no defaults invented', () => {
-    const semi = csv.split('\n').map((l) => l.replace(/"[^"]*"/g, 'x').replaceAll(',', ';')).join('\n');
-    assert.strictEqual(csvToRecords(semi).errors.length, 0);
-    const bad = csv.split('\n')[0] + '\n9,,ABC-1,Nam,31/02/1990' + ',x'.repeat(32);
-    const { errors } = csvToRecords(bad);
-    assert.strictEqual(errors.length, 1);
-    assert.match(errors[0], /họ và tên/);
-    assert.match(errors[0], /ngày sinh/);
 });
 
 test('normalizeDob', () => {
@@ -82,6 +66,11 @@ test('lock after MAX_FAILS, even correct credentials are refused while locked', 
     assert.strictEqual(ok.status, 200);
 });
 
+test('ngày sinh nhập dạng ddmmyyyy cũng tra cứu được', async () => {
+    const res = await lookup({ employee_code: '00000001', dob: '01011990', pin: pins['00000001'] });
+    assert.strictEqual(res.status, 200);
+});
+
 test('invalid input -> 400; GET on API -> 405', async () => {
     assert.strictEqual((await lookup({ employee_code: 'x', dob: 'abc', pin: '12' })).status, 400);
     assert.strictEqual((await fetch(base + '/api/lookup')).status, 405);
@@ -91,7 +80,7 @@ test('static: index served with CSP; data dir and traversal not reachable', asyn
     const res = await fetch(base + '/');
     assert.strictEqual(res.status, 200);
     assert.match(res.headers.get('content-security-policy'), /script-src 'self'/);
-    for (const p of ['/../data/ksk.db', '/%2e%2e/data/ksk.db', '/%2e%2e/server/db.js', '/sample_database.csv']) {
+    for (const p of ['/../data/ksk.db', '/%2e%2e/data/ksk.db', '/%2e%2e/server/db.js', '/mau_import_ksk.xlsx']) {
         assert.strictEqual((await fetch(base + p)).status, 404, p);
     }
 });

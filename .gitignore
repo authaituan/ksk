@@ -20,9 +20,11 @@ data/
 pins-*.csv
 *.xlsx
 *.xls
-# Chỉ cho phép file CSV mẫu (dữ liệu giả)
+# Không commit file dữ liệu CSV
 *.csv
-!sample_database.csv
+# Chỉ cho phép file Excel mẫu (dữ liệu giả)
+!admin-ui/mau_import_ksk.xlsx
+!test/fixtures/*.xlsx
 # Chứng chỉ TLS
 *.pem
 *.key

@@ -112,10 +112,18 @@
             <!-- IMPORT -->
             <section class="admin-tab" id="tab-import" hidden>
                 <div class="admin-card">
-                    <h3><i class="fa-solid fa-file-import text-blue"></i> Import danh sách khám (CSV)</h3>
-                    <p class="help-text">File CSV UTF-8 (trong Excel chọn <strong>CSV UTF-8</strong>), cột đặt tên đúng như file mẫu <code>sample_database.csv</code>. Mã nhân viên đã có sẽ được cập nhật và giữ nguyên PIN; nhân viên mới ở trạng thái "chưa có PIN".</p>
+                    <div class="card-head">
+                        <h3><i class="fa-solid fa-file-import text-blue"></i> Import danh sách khám</h3>
+                        <a class="btn btn-sm btn-success" href="mau_import_ksk.xlsx" download="mau_import_ksk.xlsx"><i class="fa-solid fa-file-excel"></i> Tải file mẫu Excel</a>
+                    </div>
+                    <ul class="help-list">
+                        <li>Nên dùng <strong>file mẫu Excel</strong>. Mọi ô trong mẫu đã định dạng <strong>Text</strong>, nên mã <code>00000001</code>, thị lực <code>10/10</code>, huyết áp <code>110/70</code> được giữ nguyên.</li>
+                        <li>Ngày sinh nhập <code>01/01/1990</code> hoặc <code>01011990</code>.</li>
+                        <li>Chỉ nhận file Excel <strong>.xlsx</strong> (đọc sheet đầu tiên). Tên cột phải giống file mẫu, thứ tự cột không quan trọng.</li>
+                        <li>Mã nhân viên đã có sẽ được cập nhật và giữ nguyên PIN. Nhân viên mới ở trạng thái "Chưa có PIN".</li>
+                    </ul>
                     <div class="row-actions">
-                        <input type="file" id="importFile" accept=".csv,text/csv">
+                        <input type="file" id="importFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                         <button class="btn btn-secondary" id="btnPreview" type="button" disabled><i class="fa-solid fa-magnifying-glass"></i> Kiểm tra file</button>
                     </div>
                     <div id="importResult" hidden>

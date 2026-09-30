@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "HealthRecord",
-  "description": "Cấu trúc 1 hồ sơ khám sức khỏe định kỳ, tương ứng 1 dòng trong sample_database.csv. Không đưa dữ liệu thật vào file này.",
+  "description": "Cấu trúc 1 hồ sơ khám sức khỏe định kỳ, tương ứng 1 dòng trong file mẫu admin-ui/mau_import_ksk.xlsx. Không đưa dữ liệu thật vào file này.",
   "type": "object",
   "required": ["full_name", "employee_code", "dob"],
   "properties": {

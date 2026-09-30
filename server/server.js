@@ -97,7 +97,7 @@ async function handleLookup(req, res) {
 
     if (!EMPLOYEE_CODE_RE.test(code) || !dob || !/^\d{6}$/.test(pin)) {
         logAccess(ip, EMPLOYEE_CODE_RE.test(code) ? code : null, 'invalid_input');
-        return sendJson(res, 400, { message: 'Vui lòng nhập đúng định dạng: mã nhân viên, ngày sinh DD/MM/YYYY và PIN 6 số.' });
+        return sendJson(res, 400, { message: 'Vui lòng nhập đúng định dạng: mã nhân viên, ngày sinh (01/01/1990 hoặc 01011990) và PIN 6 số.' });
     }
 
     const emp = db.getEmployee(code);
@@ -170,7 +170,7 @@ function start() {
         : http.createServer(handler);
 
     server.headersTimeout = 10_000;
-    server.requestTimeout = 60_000; // đủ cho import file CSV lớn
+    server.requestTimeout = 60_000; // đủ cho import file Excel lớn
 
     server.on('error', (err) => {
         if (err.code === 'EADDRINUSE') {
