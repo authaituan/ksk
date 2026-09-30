@@ -1506,12 +1506,13 @@ textarea {
 .pdf-mode .receipt-footer { margin-top: 10px; padding-top: 10px; }
 
 /* ==========================================================================
-   PHƯƠNG ÁN MÀU C - "ẤM ÁP": header/footer trắng, hero kem-cam nhạt
+   PHƯƠNG ÁN MÀU C3/K1: khung xanh than trên & dưới, thân trang kem-cam sáng
    ========================================================================== */
-.app-header { background-color: #FFFFFF; color: #172F38; border-bottom: 3px solid var(--brand-accent); box-shadow: 0 2px 12px rgba(47, 111, 130, 0.08); }
-.brand-sub { color: var(--text-muted); }
-.nav-btn { color: var(--brand-primary-dark); }
-.nav-btn:hover { background-color: var(--brand-primary-light); color: var(--brand-primary-dark); }
+/* Khung xanh than #1E2A44: chữ trắng 14.29, chữ phụ #C7D2E6 9.38 */
+.app-header { background-color: #1E2A44; color: #FFFFFF; border-bottom: 3px solid var(--brand-accent); box-shadow: 0 2px 12px rgba(30, 42, 68, 0.25); }
+.brand-sub { color: #C7D2E6; }
+.nav-btn { color: #C7D2E6; }
+.nav-btn:hover { background-color: rgba(255, 255, 255, 0.12); color: #FFFFFF; }
 .hero-section {
     color: #172F38;
     background:
@@ -1525,7 +1526,8 @@ textarea {
 .sec-item { color: var(--text-secondary); }
 .bg-pattern { background-image: none; }
 .search-card { border: 1px solid #D6E9EE; box-shadow: 0 18px 40px -12px rgba(47, 111, 130, 0.22); }
-.app-footer { background-color: #FFFFFF; color: var(--text-primary); border-top: 3px solid var(--border-color); }
-.footer-note, .footer-brand { color: var(--text-muted); }
+.app-footer { background-color: #1E2A44; color: #FFFFFF; border-top: 3px solid var(--brand-accent); }
+.footer-note { color: #C7D2E6; }
+.footer-brand { color: #FFFFFF; }
 /* Giữ tab đang chọn màu cam cả khi di chuột */
 .nav-btn.active, .nav-btn.active:hover { background-color: var(--brand-accent); color: #172F38; }

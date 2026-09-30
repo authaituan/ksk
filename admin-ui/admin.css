@@ -23,7 +23,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: var(--text-primary);
+    color: #FFFFFF;
     font-size: 0.85rem;
     flex-wrap: wrap;
 }
@@ -85,8 +85,8 @@
 
 .admin-body .main-nav { display: flex; gap: 6px; flex-wrap: wrap; }
 .admin-body .header-container { height: auto; min-height: 72px; padding: 10px 24px; flex-wrap: wrap; gap: 12px; }
-.admin-user .btn-outline { background: transparent; color: var(--brand-primary-dark); border-color: var(--border-color); }
-.admin-user .btn-outline:hover { background: var(--brand-primary-light); }
+.admin-user .btn-outline { background: transparent; color: #FFFFFF; border-color: rgba(255, 255, 255, 0.55); }
+.admin-user .btn-outline:hover { background: rgba(255, 255, 255, 0.12); color: #FFFFFF; }
 .admin-user .btn-outline-danger { background: #fff; }
 
 /* ----------------------------- In phiếu PIN ----------------------------- */
