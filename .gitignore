@@ -31,3 +31,6 @@ pins-*.csv
 # File patch/zip tai ve
 *.patch
 *.zip
+
+*.patch
+*.zip
