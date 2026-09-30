@@ -36,3 +36,6 @@ pins-*.csv
 
 *.patch
 *.zip
+
+# H? so trình duy?t c?a công c? AI
+.edge-profile/
