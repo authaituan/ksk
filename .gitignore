@@ -27,3 +27,7 @@ pins-*.csv
 *.pem
 *.key
 *.crt
+
+# File patch/zip tai ve
+*.patch
+*.zip
