@@ -46,7 +46,7 @@ Nếu không có HTTPS, ngày sinh và PIN đi qua mạng nội bộ ở dạng 
 
 | Biến | Mặc định | Ý nghĩa |
 |---|---|---|
-| `HOST` / `PORT` | `0.0.0.0` / `8080` | Địa chỉ lắng nghe |
+| `HOST` / `PORT` | (trống = mọi địa chỉ IPv4 + IPv6) / `8080` | Địa chỉ lắng nghe. Nếu cổng bị chiếm, máy chủ báo lỗi và dừng |
 | `TLS_CERT`, `TLS_KEY` | (trống) | Đường dẫn chứng chỉ để bật HTTPS |
 | `TRUST_PROXY` | (tắt) | Đặt `1` nếu chạy sau reverse proxy (IIS/nginx), để lấy IP thật từ `X-Forwarded-For` |
 | `MAX_FAILS`, `LOCK_MINUTES` | `5`, `30` | Khóa theo mã nhân viên |

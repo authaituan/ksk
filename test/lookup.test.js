@@ -8,6 +8,7 @@ const path = require('node:path');
 process.env.KSK_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'ksk-test-'));
 process.env.MAX_FAILS = '3';
 process.env.IP_MAX_REQUESTS = '1000';
+process.env.PORT = '0'; // cổng ngẫu nhiên, không đụng máy chủ thật
 
 const db = require('../server/db');
 const { csvToRecords, normalizeDob } = require('../server/records');
@@ -20,10 +21,9 @@ test.before(async () => {
     const { records, errors } = csvToRecords(csv);
     assert.deepStrictEqual(errors, []);
     pins = Object.fromEntries(db.importRecords(records).newPins.map((p) => [p.employee_code, p.pin]));
-    process.env.PORT = '0';
     server = start();
     await new Promise((r) => server.once('listening', r));
-    base = `http://127.0.0.1:${server.address().port}`;
+    base = `http://localhost:${server.address().port}`;
 });
 test.after(() => server.close());
 

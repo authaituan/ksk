@@ -18,8 +18,8 @@ const db = require('./db');
 const { EMPLOYEE_CODE_RE, normalizeDob } = require('./records');
 
 const CONFIG = {
-    host: process.env.HOST || '0.0.0.0',
-    port: Number(process.env.PORT) || 8080,
+    host: process.env.HOST || '',  // trống = lắng nghe cả IPv4 và IPv6
+    port: process.env.PORT !== undefined && process.env.PORT !== '' ? Number(process.env.PORT) : 8080,
     tlsCert: process.env.TLS_CERT || '',
     tlsKey: process.env.TLS_KEY || '',
     trustProxy: process.env.TRUST_PROXY === '1',
@@ -259,9 +259,23 @@ function start() {
     server.headersTimeout = 10_000;
     server.requestTimeout = 15_000;
 
-    server.listen(CONFIG.port, CONFIG.host, () => {
+    server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            console.error(`LỖI: cổng ${CONFIG.port} đang bị chương trình khác chiếm. Tắt chương trình đó hoặc đặt PORT khác.`);
+        } else {
+            console.error('LỖI khởi động máy chủ:', err.message);
+        }
+        process.exit(1);
+    });
+
+    // Không truyền host => Node lắng nghe "::" (cả IPv6 và IPv4). Nhờ vậy nếu
+    // có chương trình khác chiếm cổng ở IPv4 hoặc IPv6, máy chủ báo lỗi ngay
+    // thay vì âm thầm chạy song song.
+    const listenArgs = CONFIG.host ? [CONFIG.port, CONFIG.host] : [CONFIG.port];
+    server.listen(...listenArgs, () => {
         const s = db.stats();
-        console.log(`KSK đang chạy tại ${useTls ? 'https' : 'http'}://${CONFIG.host}:${CONFIG.port}`);
+        const shownHost = CONFIG.host || 'localhost';
+        console.log(`KSK đang chạy tại ${useTls ? 'https' : 'http'}://${shownHost}:${server.address().port}`);
         console.log(`Hồ sơ trong CSDL: ${s.total} (đang khóa: ${s.locked})`);
         if (!useTls) {
             console.warn('CẢNH BÁO: đang chạy HTTP không mã hóa. Khi dùng thật, đặt TLS_CERT và TLS_KEY để bật HTTPS.');
