@@ -20,7 +20,8 @@ let server, base, pins;
 test.before(async () => {
     const { records, errors } = csvToRecords(csv);
     assert.deepStrictEqual(errors, []);
-    pins = Object.fromEntries(db.importRecords(records).newPins.map((p) => [p.employee_code, p.pin]));
+    db.importRecords(records);
+    pins = Object.fromEntries(db.issueMissingPins().map((p) => [p.employee_code, p.pin]));
     server = start();
     await new Promise((r) => server.once('listening', r));
     base = `http://localhost:${server.address().port}`;

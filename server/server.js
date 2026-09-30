@@ -4,10 +4,11 @@
  *
  *   GET  /*            -> file tĩnh trong public/
  *   POST /api/lookup   -> { employee_code, dob, pin } => { record } hoặc lỗi chung
+ *   /admin/...         -> trang quản trị (server/admin.js), chỉ IP được phép
  *
  * Cấu hình qua biến môi trường (xem README):
  *   HOST, PORT, TLS_CERT, TLS_KEY, TRUST_PROXY,
- *   MAX_FAILS, LOCK_MINUTES, IP_MAX_REQUESTS, IP_WINDOW_MINUTES
+ *   MAX_FAILS, LOCK_MINUTES, IP_MAX_REQUESTS, IP_WINDOW_MINUTES, ADMIN_ALLOWED_IPS, PUBLIC_URL
  */
 const fs = require('node:fs');
 const path = require('node:path');
@@ -16,6 +17,8 @@ const https = require('node:https');
 
 const db = require('./db');
 const { EMPLOYEE_CODE_RE, normalizeDob } = require('./records');
+const { clientIp, sendJson, sendText, readJsonBody, serveStaticFrom, appendLog } = require('./http-util');
+const { createAdminHandler } = require('./admin');
 
 const CONFIG = {
     host: process.env.HOST || '',  // trống = lắng nghe cả IPv4 và IPv6
@@ -26,88 +29,24 @@ const CONFIG = {
     maxFails: Number(process.env.MAX_FAILS) || 5,
     lockMinutes: Number(process.env.LOCK_MINUTES) || 30,
     ipMaxRequests: Number(process.env.IP_MAX_REQUESTS) || 20,
-    ipWindowMinutes: Number(process.env.IP_WINDOW_MINUTES) || 15
+    ipWindowMinutes: Number(process.env.IP_WINDOW_MINUTES) || 15,
+    adminAllowedIps: process.env.ADMIN_ALLOWED_IPS || '127.0.0.1,::1',
+    publicUrl: process.env.PUBLIC_URL || ''  // địa chỉ in trên phiếu PIN, vd http://192.168.1.10:8080/
 };
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const ACCESS_LOG = path.join(db.DATA_DIR, 'access.log');
-const MAX_BODY_BYTES = 2048;
 
-const MIME = {
-    '.html': 'text/html; charset=utf-8',
-    '.css': 'text/css; charset=utf-8',
-    '.js': 'text/javascript; charset=utf-8',
-    '.svg': 'image/svg+xml',
-    '.png': 'image/png',
-    '.ico': 'image/x-icon'
-};
-
-const SECURITY_HEADERS = {
-    'Content-Security-Policy': [
-        "default-src 'self'",
-        "script-src 'self'",
-        "style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
-        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-        "img-src 'self' data:",
-        "connect-src 'self'",
-        "frame-ancestors 'none'",
-        "base-uri 'none'",
-        "form-action 'self'"
-    ].join('; '),
-    'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'DENY',
-    'Referrer-Policy': 'no-referrer',
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
-};
-
-/* --------------------------------------------------------------------------
-   Tiện ích
-   -------------------------------------------------------------------------- */
-function clientIp(req) {
-    if (CONFIG.trustProxy) {
-        const fwd = req.headers['x-forwarded-for'];
-        if (fwd) return String(fwd).split(',')[0].trim();
-    }
-    return req.socket.remoteAddress || 'unknown';
-}
-
-function sendJson(res, status, body, extraHeaders = {}) {
-    res.writeHead(status, {
-        ...SECURITY_HEADERS,
-        'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'no-store',
-        ...extraHeaders
-    });
-    res.end(JSON.stringify(body));
-}
+const adminHandler = createAdminHandler({
+    trustProxy: CONFIG.trustProxy,
+    allowedIps: CONFIG.adminAllowedIps,
+    secureCookie: Boolean(CONFIG.tlsCert && CONFIG.tlsKey),
+    publicUrl: CONFIG.publicUrl
+});
 
 /** Ghi log truy cập (không ghi PIN, ngày sinh hay dữ liệu sức khỏe). */
 function logAccess(ip, employeeCode, outcome) {
-    const line = JSON.stringify({ ts: new Date().toISOString(), ip, employee_code: employeeCode, outcome });
-    fs.appendFile(ACCESS_LOG, line + '\n', (err) => {
-        if (err) console.error('Không ghi được access.log:', err.message);
-    });
-}
-
-function readJsonBody(req) {
-    return new Promise((resolve, reject) => {
-        let size = 0;
-        const chunks = [];
-        req.on('data', (chunk) => {
-            size += chunk.length;
-            if (size > MAX_BODY_BYTES) {
-                reject(Object.assign(new Error('too large'), { status: 413 }));
-                req.destroy();
-                return;
-            }
-            chunks.push(chunk);
-        });
-        req.on('end', () => {
-            try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); }
-            catch { reject(Object.assign(new Error('bad json'), { status: 400 })); }
-        });
-        req.on('error', reject);
-    });
+    appendLog(ACCESS_LOG, { ip, employee_code: employeeCode, outcome });
 }
 
 /* --------------------------------------------------------------------------
@@ -138,7 +77,7 @@ setInterval(() => {
 const MSG_FAIL = 'Thông tin tra cứu không khớp. Vui lòng kiểm tra lại mã nhân viên, ngày sinh và mã PIN.';
 
 async function handleLookup(req, res) {
-    const ip = clientIp(req);
+    const ip = clientIp(req, CONFIG.trustProxy);
 
     if (ipRateLimited(ip)) {
         logAccess(ip, null, 'ip_rate_limited');
@@ -196,54 +135,28 @@ async function handleLookup(req, res) {
 }
 
 /* --------------------------------------------------------------------------
-   File tĩnh (chỉ trong public/)
-   -------------------------------------------------------------------------- */
-function serveStatic(req, res) {
-    let urlPath;
-    try {
-        urlPath = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
-    } catch {
-        res.writeHead(400, SECURITY_HEADERS);
-        return res.end('Bad request');
-    }
-    if (urlPath === '/') urlPath = '/index.html';
-
-    const filePath = path.resolve(PUBLIC_DIR, '.' + urlPath);
-    if (!filePath.startsWith(PUBLIC_DIR + path.sep)) {
-        res.writeHead(404, SECURITY_HEADERS);
-        return res.end('Not found');
-    }
-
-    fs.readFile(filePath, (err, data) => {
-        if (err) {
-            res.writeHead(404, { ...SECURITY_HEADERS, 'Content-Type': 'text/plain; charset=utf-8' });
-            return res.end('Not found');
-        }
-        res.writeHead(200, {
-            ...SECURITY_HEADERS,
-            'Content-Type': MIME[path.extname(filePath).toLowerCase()] || 'application/octet-stream',
-            'Cache-Control': 'no-cache'
-        });
-        res.end(req.method === 'HEAD' ? undefined : data);
-    });
-}
-
-/* --------------------------------------------------------------------------
    Router
    -------------------------------------------------------------------------- */
 async function handler(req, res) {
     try {
-        const pathname = new URL(req.url, 'http://localhost').pathname;
+        let url;
+        try {
+            url = new URL(req.url, 'http://localhost');
+            decodeURIComponent(url.pathname);
+        } catch {
+            return sendText(res, 400, 'Bad request');
+        }
+        const pathname = url.pathname;
+
+        if (await adminHandler(req, res, url)) return;
+
         if (pathname === '/api/lookup') {
             if (req.method !== 'POST') return sendJson(res, 405, { message: 'Method not allowed' }, { Allow: 'POST' });
             return await handleLookup(req, res);
         }
         if (pathname.startsWith('/api/')) return sendJson(res, 404, { message: 'Not found' });
-        if (req.method !== 'GET' && req.method !== 'HEAD') {
-            res.writeHead(405, { ...SECURITY_HEADERS, Allow: 'GET, HEAD' });
-            return res.end();
-        }
-        return serveStatic(req, res);
+        if (req.method !== 'GET' && req.method !== 'HEAD') return sendText(res, 405, 'Method not allowed', { Allow: 'GET, HEAD' });
+        return serveStaticFrom(PUBLIC_DIR, decodeURIComponent(pathname), req, res);
     } catch (err) {
         console.error(err);
         if (!res.headersSent) sendJson(res, 500, { message: 'Lỗi máy chủ.' });
@@ -257,7 +170,7 @@ function start() {
         : http.createServer(handler);
 
     server.headersTimeout = 10_000;
-    server.requestTimeout = 15_000;
+    server.requestTimeout = 60_000; // đủ cho import file CSV lớn
 
     server.on('error', (err) => {
         if (err.code === 'EADDRINUSE') {
@@ -276,7 +189,8 @@ function start() {
         const s = db.stats();
         const shownHost = CONFIG.host || 'localhost';
         console.log(`KSK đang chạy tại ${useTls ? 'https' : 'http'}://${shownHost}:${server.address().port}`);
-        console.log(`Hồ sơ trong CSDL: ${s.total} (đang khóa: ${s.locked})`);
+        console.log(`Hồ sơ trong CSDL: ${s.total} (chưa có PIN: ${s.without_pin}, đang khóa: ${s.locked})`);
+        console.log(`Trang quản trị: /admin/ (chỉ mở cho: ${CONFIG.adminAllowedIps})`);
         if (!useTls) {
             console.warn('CẢNH BÁO: đang chạy HTTP không mã hóa. Khi dùng thật, đặt TLS_CERT và TLS_KEY để bật HTTPS.');
         }

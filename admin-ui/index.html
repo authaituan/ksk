@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>KSK - Quản trị</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+    <header class="app-header no-print">
+        <div class="header-container">
+            <div class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-user-gear"></i></div>
+                <div class="logo-text">
+                    <span class="brand-title">KSK <span class="badge-brand">QUẢN TRỊ</span></span>
+                    <span class="brand-sub">KẾT QUẢ KHÁM SỨC KHỎE ĐỊNH KỲ</span>
+                </div>
+            </div>
+            <nav class="main-nav" id="mainNav" hidden>
+                <button class="nav-btn" data-tab="tab-employees" data-perm="employees.view" type="button"><i class="fa-solid fa-users"></i> Nhân viên</button>
+                <button class="nav-btn" data-tab="tab-import" data-perm="import" type="button"><i class="fa-solid fa-file-import"></i> Import dữ liệu</button>
+                <button class="nav-btn" data-tab="tab-pins" data-perm="pin" type="button"><i class="fa-solid fa-key"></i> Phát PIN</button>
+                <button class="nav-btn" data-tab="tab-users" data-perm="users" type="button"><i class="fa-solid fa-user-shield"></i> Tài khoản</button>
+                <button class="nav-btn" data-tab="tab-logs" data-perm="logs" type="button"><i class="fa-solid fa-clock-rotate-left"></i> Nhật ký</button>
+            </nav>
+            <div class="admin-user" id="userBox" hidden>
+                <span><i class="fa-solid fa-circle-user"></i> <strong id="userName"></strong> · <span id="userRole"></span></span>
+                <button class="btn btn-sm btn-outline" id="btnShowPassword" type="button">Đổi mật khẩu</button>
+                <button class="btn btn-sm btn-outline-danger" id="btnLogout" type="button">Đăng xuất</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main no-print">
+        <!-- ĐĂNG NHẬP -->
+        <section class="admin-card narrow" id="viewLogin" hidden>
+            <h2 class="page-title"><i class="fa-solid fa-lock text-accent"></i> Đăng nhập quản trị</h2>
+            <form id="formLogin" autocomplete="off" novalidate>
+                <div class="form-group">
+                    <label for="loginUser">Tên đăng nhập</label>
+                    <input class="admin-input" id="loginUser" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPass">Mật khẩu</label>
+                    <input class="admin-input" id="loginPass" type="password" autocomplete="current-password" required>
+                </div>
+                <div class="form-message" id="loginMsg" role="alert" hidden></div>
+                <button class="btn btn-primary full" type="submit"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</button>
+            </form>
+        </section>
+
+        <!-- ĐỔI MẬT KHẨU -->
+        <section class="admin-card narrow" id="viewPassword" hidden>
+            <h2 class="page-title"><i class="fa-solid fa-key text-accent"></i> Đổi mật khẩu</h2>
+            <p class="notice" id="mustChangeNotice" hidden>Đây là lần đăng nhập đầu hoặc mật khẩu vừa được cấp lại. Bạn cần đặt mật khẩu mới trước khi tiếp tục.</p>
+            <form id="formPassword" autocomplete="off" novalidate>
+                <div class="form-group">
+                    <label for="pwCurrent">Mật khẩu hiện tại</label>
+                    <input class="admin-input" id="pwCurrent" type="password" autocomplete="current-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="pwNew">Mật khẩu mới (ít nhất 10 ký tự)</label>
+                    <input class="admin-input" id="pwNew" type="password" autocomplete="new-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="pwNew2">Nhập lại mật khẩu mới</label>
+                    <input class="admin-input" id="pwNew2" type="password" autocomplete="new-password" required>
+                </div>
+                <div class="form-message" id="pwMsg" role="alert" hidden></div>
+                <div class="row-actions">
+                    <button class="btn btn-primary" type="submit">Lưu mật khẩu mới</button>
+                    <button class="btn btn-outline" id="btnCancelPassword" type="button">Hủy</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- ỨNG DỤNG -->
+        <div id="viewApp" hidden>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon bg-blue"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-info"><span class="stat-value" id="statTotal">0</span><span class="stat-label">Hồ sơ trong CSDL</span></div></div>
+                <div class="stat-card"><div class="stat-icon bg-accent"><i class="fa-solid fa-key"></i></div>
+                    <div class="stat-info"><span class="stat-value" id="statNoPin">0</span><span class="stat-label">Chưa có PIN</span></div></div>
+                <div class="stat-card"><div class="stat-icon bg-dark"><i class="fa-solid fa-lock"></i></div>
+                    <div class="stat-info"><span class="stat-value" id="statLocked">0</span><span class="stat-label">Đang tạm khóa tra cứu</span></div></div>
+            </div>
+
+            <!-- NHÂN VIÊN -->
+            <section class="admin-tab" id="tab-employees" hidden>
+                <div class="admin-card">
+                    <div class="card-head">
+                        <h3><i class="fa-solid fa-users text-blue"></i> Danh sách nhân viên</h3>
+                        <input class="admin-input search" id="empSearch" placeholder="Tìm theo mã, họ tên, bộ phận, đơn vị...">
+                    </div>
+                    <p class="help-text">Trang quản trị chỉ hiển thị thông tin định danh và trạng thái. Kết quả khám chỉ người lao động tự xem bằng PIN.</p>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Mã NV</th><th>Họ và tên</th><th>Bộ phận</th><th>Đơn vị</th><th>PIN</th><th>Tra cứu</th><th>Thao tác</th></tr></thead>
+                            <tbody id="empBody"></tbody>
+                        </table>
+                    </div>
+                    <p class="help-text" id="empCount"></p>
+                </div>
+            </section>
+
+            <!-- IMPORT -->
+            <section class="admin-tab" id="tab-import" hidden>
+                <div class="admin-card">
+                    <h3><i class="fa-solid fa-file-import text-blue"></i> Import danh sách khám (CSV)</h3>
+                    <p class="help-text">File CSV UTF-8 (trong Excel chọn <strong>CSV UTF-8</strong>), cột đặt tên đúng như file mẫu <code>sample_database.csv</code>. Mã nhân viên đã có sẽ được cập nhật và giữ nguyên PIN; nhân viên mới ở trạng thái "chưa có PIN".</p>
+                    <div class="row-actions">
+                        <input type="file" id="importFile" accept=".csv,text/csv">
+                        <button class="btn btn-secondary" id="btnPreview" type="button" disabled><i class="fa-solid fa-magnifying-glass"></i> Kiểm tra file</button>
+                    </div>
+                    <div id="importResult" hidden>
+                        <div class="import-summary" id="importSummary"></div>
+                        <ul class="error-list" id="importErrors"></ul>
+                        <button class="btn btn-primary" id="btnCommit" type="button" disabled><i class="fa-solid fa-check"></i> Xác nhận import</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PHÁT PIN -->
+            <section class="admin-tab" id="tab-pins" hidden>
+                <div class="admin-card">
+                    <h3><i class="fa-solid fa-key text-blue"></i> Phát PIN cho người lao động</h3>
+                    <p><strong id="pinPending">0</strong> nhân viên chưa có PIN.</p>
+                    <button class="btn btn-primary" id="btnIssuePins" type="button"><i class="fa-solid fa-key"></i> Cấp PIN cho tất cả người chưa có PIN</button>
+                    <p class="help-text">Để cấp lại PIN cho một người (quên PIN), vào tab <strong>Nhân viên</strong> và bấm "Cấp lại PIN".</p>
+                </div>
+            </section>
+
+            <!-- KẾT QUẢ CẤP PIN (dùng chung cho cấp hàng loạt và cấp lại) -->
+            <section class="admin-card pin-result" id="pinResult" hidden>
+                <div class="card-head">
+                    <h3><i class="fa-solid fa-triangle-exclamation text-accent"></i> PIN vừa cấp: <span id="pinResultCount"></span> người</h3>
+                    <div class="row-actions">
+                        <button class="btn btn-success" id="btnPinExcel" type="button"><i class="fa-solid fa-file-excel"></i> Tải Excel</button>
+                        <button class="btn btn-secondary" id="btnPinPrint" type="button"><i class="fa-solid fa-print"></i> In phiếu PIN</button>
+                        <button class="btn btn-outline-danger" id="btnPinClear" type="button"><i class="fa-solid fa-eraser"></i> Xóa khỏi màn hình</button>
+                    </div>
+                </div>
+                <p class="notice">PIN chỉ hiển thị <strong>một lần</strong>, hệ thống không lưu PIN gốc. Hãy tải Excel hoặc in phiếu ngay. Nếu làm mất, bạn phải cấp lại PIN.</p>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead><tr><th>Mã NV</th><th>Họ và tên</th><th>Bộ phận</th><th>Đơn vị</th><th>PIN</th></tr></thead>
+                        <tbody id="pinBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TÀI KHOẢN -->
+            <section class="admin-tab" id="tab-users" hidden>
+                <div class="admin-card">
+                    <h3><i class="fa-solid fa-user-plus text-blue"></i> Tạo tài khoản quản trị</h3>
+                    <form class="row-actions" id="formCreateUser" autocomplete="off" novalidate>
+                        <input class="admin-input" id="newUsername" placeholder="Tên đăng nhập (a-z, 0-9, . _ -)">
+                        <select id="newRole"></select>
+                        <button class="btn btn-primary" type="submit">Tạo tài khoản</button>
+                    </form>
+                    <div class="notice" id="tempPassword" hidden></div>
+                </div>
+                <div class="admin-card">
+                    <h3><i class="fa-solid fa-user-shield text-blue"></i> Danh sách tài khoản</h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Tên đăng nhập</th><th>Vai trò</th><th>Trạng thái</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+                            <tbody id="userBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NHẬT KÝ -->
+            <section class="admin-tab" id="tab-logs" hidden>
+                <div class="admin-card">
+                    <div class="card-head">
+                        <h3><i class="fa-solid fa-clock-rotate-left text-blue"></i> Nhật ký (200 dòng gần nhất)</h3>
+                        <select id="logType">
+                            <option value="admin">Thao tác quản trị</option>
+                            <option value="access">Tra cứu của người lao động</option>
+                        </select>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Thời gian</th><th>IP</th><th>Người dùng / Mã NV</th><th>Hành động</th><th>Chi tiết</th></tr></thead>
+                            <tbody id="logBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Vùng in phiếu PIN (chỉ hiện khi in) -->
+    <div id="printArea" class="print-only"></div>
+
+    <div id="toastContainer" class="toast-container no-print"></div>
+
+    <script src="xlsx.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+/* KSK - Trang quản trị: bổ sung cho /styles.css */
+
+.admin-body { background-color: var(--bg-main); min-height: 100vh; }
+
+.admin-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+}
+
+.admin-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+}
+.admin-card h3 { margin: 0 0 12px; font-size: 1.05rem; color: var(--text-primary); }
+.admin-card.narrow { max-width: 440px; margin: 40px auto; }
+
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.admin-input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: #fff;
+    color: var(--text-primary);
+}
+.admin-input:focus { outline: none; border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15); }
+.admin-input.search { max-width: 360px; }
+
+.admin-card .form-group { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+.admin-card label { font-weight: 600; font-size: 0.88rem; }
+.btn.full { width: 100%; justify-content: center; }
+
+.card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+.card-head h3 { margin: 0; }
+
+.row-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+.row-actions select, .row-actions .admin-input { width: auto; min-width: 220px; }
+
+.notice {
+    background: var(--brand-accent-light);
+    border: 1px solid var(--brand-accent);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    margin: 10px 0;
+}
+
+.muted { color: var(--text-muted); font-size: 0.85rem; }
+.center { text-align: center; }
+.text-danger { color: var(--danger-color); }
+
+.status-tag.tag-warn { background: #FEF3C7; color: #92400E; }
+.status-tag.tag-danger { background: var(--danger-bg); color: var(--danger-color); }
+
+.pin-code { font-family: ui-monospace, Consolas, monospace; font-size: 1.05rem; letter-spacing: 2px; }
+
+.import-summary { display: flex; gap: 20px; flex-wrap: wrap; margin: 12px 0; }
+.error-list { color: var(--danger-color); font-size: 0.88rem; max-height: 260px; overflow: auto; padding-left: 20px; }
+
+.pin-result { border: 2px solid var(--brand-accent); }
+
+.admin-body .main-nav { display: flex; gap: 6px; flex-wrap: wrap; }
+.admin-body .header-container { height: auto; min-height: 72px; padding: 10px 24px; flex-wrap: wrap; gap: 12px; }
+.admin-user .btn-outline { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.6); }
+.admin-user .btn-outline:hover { background: rgba(255, 255, 255, 0.15); }
+.admin-user .btn-outline-danger { background: #fff; }
+
+/* ----------------------------- In phiếu PIN ----------------------------- */
+.print-only { display: none; }
+
+@media print {
+    @page { size: A4; margin: 10mm; }
+    .no-print, .toast-container { display: none !important; }
+    .admin-body { background: #fff; }
+    /* styles.css ẩn mọi thứ khi in (body * { visibility: hidden }), mở lại vùng phiếu PIN */
+    #printArea, #printArea * { visibility: visible; }
+    .print-only {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+    }
+    .pin-slip {
+        border: 1px dashed #555;
+        padding: 8mm 6mm;
+        min-height: 60mm;
+        break-inside: avoid;
+        font-size: 10.5pt;
+        color: #000;
+    }
+    .slip-title { font-weight: 700; font-size: 10.5pt; margin-bottom: 3mm; text-align: center; }
+    .slip-row { margin: 1mm 0; }
+    .slip-pin { margin: 3mm 0; font-size: 12pt; }
+    .slip-pin span { font-family: Consolas, monospace; font-size: 20pt; font-weight: 700; letter-spacing: 4px; border: 1px solid #000; padding: 1mm 3mm; }
+    .slip-note { font-size: 8.5pt; margin-top: 1.5mm; }
+}
