@@ -3,37 +3,45 @@
    ========================================================================== */
 
 :root {
-    --brand-accent: #14B8A6;
-    --brand-accent-hover: #0D9488;
-    --brand-accent-light: #F0FDFA;
-    --brand-primary: #1E40AF;
-    --brand-primary-dark: #1E3A8A;
-    --brand-primary-light: #EFF6FF;
-    --brand-secondary: #2563EB;
-    
-    --bg-main: #F8FAFC;
+    /* Thương hiệu: xanh biển */
+    --brand-primary: #2F6F82;        /* header, nút chính (chữ trắng) */
+    --brand-primary-dark: #1F4E5C;   /* tiêu đề, chữ nhấn */
+    --brand-primary-light: #E8F3F6;  /* nền ô nhấn nhẹ */
+    --brand-secondary: #6DB5CA;      /* CHỈ trang trí: icon, viền, đường kẻ, nền icon */
+
+    /* Điểm nhấn: cam */
+    --brand-accent: #FF7235;         /* viền dưới header, con dấu, nút CTA lớn */
+    --brand-accent-hover: #F05A1A;
+    --brand-accent-light: #FFF1EA;
+    --brand-accent-text: #C2410C;    /* BIẾN MỚI: chữ màu cam cỡ nhỏ */
+
+    /* Nền & chữ */
+    --bg-main: #FCF5EF;
     --card-bg: #FFFFFF;
-    --text-primary: #0F172A;
-    --text-secondary: #475569;
-    --text-muted: #94A3B8;
-    
-    --border-color: #E2E8F0;
-    --border-hover: #CBD5E1;
-    
+    --text-primary: #1E3A44;
+    --text-secondary: #4A6670;
+    --text-muted: #56707A;           /* chữ phụ: 4.87 trên nền kem, 5.26 trên trắng */
+
+    --border-color: #B8D8E0;
+    --border-hover: #6DB5CA;
+
+    /* Trạng thái: giữ nguyên để nhận diện đúng/sai */
     --success-color: #10B981;
     --success-bg: #ECFDF5;
+    --success-text: #047857;         /* chữ/nút xanh lá: 5.21 trên nền nhạt, chữ trắng 5.48 */
     --warning-color: #F59E0B;
     --danger-color: #EF4444;
     --danger-bg: #FEF2F2;
 
+    /* (giữ nguyên các biến radius, transition) */
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
     --radius-full: 9999px;
 
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 12px -2px rgba(0, 82, 156, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
-    --shadow-lg: 0 12px 32px -4px rgba(0, 82, 156, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 1px 2px 0 rgba(30, 58, 68, 0.06);
+    --shadow-md: 0 4px 12px -2px rgba(47, 111, 130, 0.10), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 12px 32px -4px rgba(47, 111, 130, 0.14), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
     
     --transition-fast: 0.15s ease;
     --transition-normal: 0.25s ease;
@@ -65,7 +73,7 @@ body {
 
 code {
     font-family: 'Courier New', Courier, monospace;
-    background-color: #E2E8F0;
+    background-color: var(--brand-primary-light);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.9em;
@@ -127,7 +135,8 @@ code {
 
 .badge-brand {
     background-color: var(--brand-accent);
-    color: #000;
+    color: #172F38;
+    font-weight: 700;
     padding: 1px 6px;
     border-radius: 4px;
     font-size: 0.75rem;
@@ -168,7 +177,8 @@ code {
 
 .nav-btn.active {
     background-color: var(--brand-accent);
-    color: var(--brand-primary-dark);
+    color: #172F38;
+    font-weight: 700;
     box-shadow: var(--shadow-sm);
 }
 
@@ -211,7 +221,7 @@ code {
    ========================================================================== */
 .hero-section {
     position: relative;
-    background: linear-gradient(135deg, var(--brand-primary) 0%, #172554 100%);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
     padding: 50px 20px 70px;
     color: #FFFFFF;
     text-align: center;
@@ -246,9 +256,9 @@ code {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background-color: rgba(245, 139, 19, 0.15);
+    background-color: var(--brand-accent-light);
     border: 1px solid var(--brand-accent);
-    color: var(--brand-accent);
+    color: var(--brand-accent-text);
     padding: 6px 16px;
     border-radius: var(--radius-full);
     font-size: 0.85rem;
@@ -381,7 +391,7 @@ textarea {
 .input-wrapper input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--brand-primary);
-    box-shadow: 0 0 0 3px rgba(0, 82, 156, 0.15);
+    box-shadow: 0 0 0 3px rgba(47, 111, 130, 0.15);
 }
 
 .help-text {
@@ -458,40 +468,58 @@ textarea {
 }
 
 .btn-primary {
-    background-color: var(--brand-accent);
-    color: var(--brand-primary-dark);
-    border-color: var(--brand-accent);
-    box-shadow: 0 4px 12px rgba(245, 139, 19, 0.3);
+    background-color: var(--brand-primary);
+    color: #FFFFFF;
+    border-color: var(--brand-primary);
+    box-shadow: 0 4px 12px rgba(47, 111, 130, 0.2);
 }
 
 .btn-primary:hover {
+    background-color: var(--brand-primary-dark);
+    border-color: var(--brand-primary-dark);
+}
+
+.btn-primary.btn-lg, #btnSubmitLookup {
+    background-color: var(--brand-accent);
+    color: #172F38;
+    font-weight: 700;
+    border-color: var(--brand-accent);
+    box-shadow: 0 4px 12px rgba(255, 114, 53, 0.3);
+}
+
+.btn-primary.btn-lg:hover, #btnSubmitLookup:hover {
     background-color: var(--brand-accent-hover);
     border-color: var(--brand-accent-hover);
+    color: #172F38;
 }
 
 .btn-secondary {
-    background-color: var(--brand-primary);
+    background-color: var(--brand-primary-dark);
     color: #FFFFFF;
 }
 
 .btn-secondary:hover {
-    background-color: var(--brand-primary-dark);
+    background-color: var(--brand-primary);
 }
 
 .btn-success {
-    background-color: var(--success-color);
+    background-color: var(--success-text);
     color: #FFFFFF;
+}
+
+.btn-success:hover {
+    background-color: #065F46;
 }
 
 .btn-outline {
     background: transparent;
     border-color: var(--border-color);
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 .btn-outline:hover {
-    background-color: var(--bg-main);
-    border-color: var(--border-hover);
+    background-color: var(--card-bg);
+    border-color: var(--brand-secondary);
     color: var(--text-primary);
 }
 
@@ -581,8 +609,8 @@ textarea {
 
 /* Printable Medical Examination Receipt Box */
 .receipt-box {
-    background-color: #FAFAFA;
-    border: 2px dashed var(--brand-primary);
+    background-color: var(--card-bg);
+    border: 2px dashed var(--brand-secondary);
     border-radius: var(--radius-md);
     padding: 28px;
 }
@@ -661,7 +689,7 @@ textarea {
 .official-seal {
     border: 2px double var(--brand-accent);
     background-color: var(--brand-accent-light);
-    color: var(--brand-accent-hover);
+    color: var(--brand-accent-text);
     padding: 8px 16px;
     border-radius: 8px;
     display: flex;
@@ -724,12 +752,12 @@ textarea {
 
 .highlight-box {
     background-color: var(--brand-primary-light);
-    border-color: rgba(0, 82, 156, 0.3);
+    border-color: var(--border-color);
 }
 
 .highlight-accent-box {
     background-color: var(--brand-accent-light);
-    border-color: rgba(245, 139, 19, 0.4);
+    border-color: #FFD2BD;
 }
 
 .details-content {
@@ -756,7 +784,7 @@ textarea {
 }
 
 .lab-table th {
-    background-color: #F1F5F9;
+    background-color: var(--brand-primary-light);
     color: var(--text-primary);
     font-weight: 700;
     padding: 8px 10px;
@@ -782,7 +810,7 @@ textarea {
 
 .tag-success {
     background-color: var(--success-bg);
-    color: var(--success-color);
+    color: var(--success-text);
 }
 
 .receipt-footer {
@@ -983,7 +1011,7 @@ textarea {
 }
 
 .dropzone:hover {
-    background-color: #E2EFF9;
+    background-color: var(--brand-primary-light);
     border-color: var(--brand-accent);
 }
 
@@ -1042,7 +1070,7 @@ textarea {
 }
 
 .data-table th {
-    background-color: #F1F5F9;
+    background-color: var(--brand-primary-light);
     font-weight: 700;
     color: var(--text-primary);
     white-space: nowrap;
@@ -1109,7 +1137,7 @@ textarea {
 
 .bg-light-accent {
     background-color: var(--brand-accent-light);
-    border-color: rgba(245, 139, 19, 0.4);
+    border-color: #FFD2BD;
 }
 
 .adv-header {
@@ -1382,6 +1410,47 @@ textarea {
     .info-cell.full {
         grid-column: span 1;
     }
+    .form-actions {
+        flex-direction: column;
+    }
+    .form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    /* Trang kết quả trên điện thoại (không áp cho bản dựng PDF .pdf-mode) */
+    .result-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .result-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .result-actions .btn {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+    .receipt-box:not(.pdf-mode) {
+        padding: 16px;
+    }
+    .receipt-box:not(.pdf-mode) .receipt-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .receipt-box:not(.pdf-mode) .receipt-meta {
+        align-items: flex-start;
+    }
+    .receipt-box:not(.pdf-mode) .person-profile {
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 14px;
+    }
+    .receipt-box:not(.pdf-mode) .profile-main {
+        flex: 1 1 180px;
+        min-width: 0;
+    }
 }
 
 /* ==========================================================================
@@ -1435,3 +1504,28 @@ textarea {
 .pdf-mode .lab-table th { white-space: normal; padding: 8px 4px; font-size: 13px; }
 .pdf-mode .lab-table td { padding: 10px 4px; word-break: break-word; }
 .pdf-mode .receipt-footer { margin-top: 10px; padding-top: 10px; }
+
+/* ==========================================================================
+   PHƯƠNG ÁN MÀU C - "ẤM ÁP": header/footer trắng, hero kem-cam nhạt
+   ========================================================================== */
+.app-header { background-color: #FFFFFF; color: #172F38; border-bottom: 3px solid var(--brand-accent); box-shadow: 0 2px 12px rgba(47, 111, 130, 0.08); }
+.brand-sub { color: var(--text-muted); }
+.nav-btn { color: var(--brand-primary-dark); }
+.nav-btn:hover { background-color: var(--brand-primary-light); color: var(--brand-primary-dark); }
+.hero-section {
+    color: #172F38;
+    background:
+        radial-gradient(circle at 12% 20%, rgba(109, 181, 202, 0.35) 0, rgba(109, 181, 202, 0) 32%),
+        radial-gradient(circle at 88% 85%, rgba(255, 114, 53, 0.18) 0, rgba(255, 114, 53, 0) 30%),
+        linear-gradient(180deg, #FFF1EA 0%, #FCF5EF 100%);
+}
+.hero-title { color: #173F4B; }
+.hero-desc { color: var(--text-secondary); }
+.hero-desc strong { color: #173F4B; }
+.sec-item { color: var(--text-secondary); }
+.bg-pattern { background-image: none; }
+.search-card { border: 1px solid #D6E9EE; box-shadow: 0 18px 40px -12px rgba(47, 111, 130, 0.22); }
+.app-footer { background-color: #FFFFFF; color: var(--text-primary); border-top: 3px solid var(--border-color); }
+.footer-note, .footer-brand { color: var(--text-muted); }
+/* Giữ tab đang chọn màu cam cả khi di chuột */
+.nav-btn.active, .nav-btn.active:hover { background-color: var(--brand-accent); color: #172F38; }

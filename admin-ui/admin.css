@@ -23,7 +23,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #fff;
+    color: var(--text-primary);
     font-size: 0.85rem;
     flex-wrap: wrap;
 }
@@ -37,7 +37,7 @@
     background: #fff;
     color: var(--text-primary);
 }
-.admin-input:focus { outline: none; border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15); }
+.admin-input:focus { outline: none; border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(47, 111, 130, 0.15); }
 .admin-input.search { max-width: 360px; }
 
 .admin-card .form-group { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
@@ -85,8 +85,8 @@
 
 .admin-body .main-nav { display: flex; gap: 6px; flex-wrap: wrap; }
 .admin-body .header-container { height: auto; min-height: 72px; padding: 10px 24px; flex-wrap: wrap; gap: 12px; }
-.admin-user .btn-outline { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.6); }
-.admin-user .btn-outline:hover { background: rgba(255, 255, 255, 0.15); }
+.admin-user .btn-outline { background: transparent; color: var(--brand-primary-dark); border-color: var(--border-color); }
+.admin-user .btn-outline:hover { background: var(--brand-primary-light); }
 .admin-user .btn-outline-danger { background: #fff; }
 
 /* ----------------------------- In phiếu PIN ----------------------------- */
