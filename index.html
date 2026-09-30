@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Tra Cứu Hồ Sơ Sức Khỏe Lao Động - Vietnam Post</title>
+    <meta name="description" content="Tra cứu kết quả khám sức khỏe định kỳ người lao động Bưu điện (VNPost) an toàn bảo mật theo Mã HRM và Ngày sinh.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main Navigation Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand-logo" id="brandLogo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-notes-medical"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand-title">VNPORTAL <span class="badge-post">HEALTH</span></span>
+                    <span class="brand-sub">TRA CỨU HỒ SƠ SỨC KHỎE LAO ĐỘNG BƯU ĐIỆN</span>
+                </div>
+            </div>
+
+            <nav class="main-nav">
+                <button class="nav-btn active" data-tab="lookup-tab" id="navLookupBtn">
+                    <i class="fa-solid fa-magnifying-glass"></i> Tra Cứu Lao Động
+                </button>
+                <button class="nav-btn" data-tab="cms-tab" id="navCmsBtn">
+                    <i class="fa-solid fa-database"></i> CMS Quản Lý & Import Excel
+                </button>
+                <button class="nav-btn" data-tab="security-tab" id="navSecurityBtn">
+                    <i class="fa-solid fa-shield-halved"></i> Tư Vấn Bảo Mật Dữ Liệu
+                </button>
+            </nav>
+
+            <div class="header-actions">
+                <span class="status-indicator">
+                    <span class="dot"></span> Dữ liệu Bưu điện an toàn
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+
+        <!-- TAB 1: FRONT-PAGE TRA CỨU KẾT QUẢ KHÁM SỨC KHỎE -->
+        <section class="tab-pane active" id="lookup-tab">
+            <!-- Hero Banner & Search Section -->
+            <div class="hero-section">
+                <div class="hero-background">
+                    <div class="bg-pattern"></div>
+                </div>
+                <div class="hero-content">
+                    <div class="badge-pill">
+                        <i class="fa-solid fa-user-shield"></i> Cổng Tra Cứu Khám Sức Khỏe Định Kỳ Người Lao Động
+                    </div>
+                    <h1 class="hero-title">TRA CỨU KẾT QUẢ KHÁM SỨC KHỎE BƯU ĐIỆN</h1>
+                    <p class="hero-desc">Nhập chính xác <strong>Mã HRM (Mã nhân viên)</strong> và <strong>Ngày tháng năm sinh</strong> để truy xuất chi tiết kết quả khám sức khỏe.</p>
+
+                    <!-- Main Search Card -->
+                    <div class="search-card">
+                        <div class="search-card-header">
+                            <div class="tab-switch">
+                                <button class="switch-btn active" id="modeLookupHrm">
+                                    <i class="fa-solid fa-id-badge"></i> Theo Mã HRM + Ngày Sinh
+                                </button>
+                                <button class="switch-btn" id="modeLookupName">
+                                    <i class="fa-solid fa-user"></i> Theo Họ Tên + Ngày Sinh
+                                </button>
+                            </div>
+                        </div>
+
+                        <form id="lookupForm" class="search-form" autocomplete="off">
+                            <div class="form-grid">
+                                <!-- Field 1 -->
+                                <div class="form-group" id="groupField1">
+                                    <label for="inputField1" id="labelField1">Mã HRM Nhân Viên <span class="req">*</span></label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-barcode input-icon"></i>
+                                        <input type="text" id="inputField1" placeholder="Ví dụ: 00269118" required>
+                                    </div>
+                                    <span class="help-text" id="helpField1">Mã nhân viên HRM gồm 8 chữ số trên phần mềm Bưu điện</span>
+                                </div>
+
+                                <!-- Field 2: Date of Birth -->
+                                <div class="form-group">
+                                    <label for="inputDob">Ngày Sinh (DD/MM/YYYY) <span class="req">*</span></label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-calendar-days input-icon"></i>
+                                        <input type="text" id="inputDob" placeholder="Ví dụ: 09/10/1992" required>
+                                    </div>
+                                    <span class="help-text">Nhập chính xác ngày sinh để khớp hồ sơ cá nhân</span>
+                                </div>
+
+                                <!-- Verification Captcha Field -->
+                                <div class="form-group full-width">
+                                    <label for="inputCaptcha">Mã Xác Nhận An Toàn (Anti-Bot) <span class="req">*</span></label>
+                                    <div class="captcha-row">
+                                        <div class="captcha-box">
+                                            <span id="captchaCode">8 4 9 2</span>
+                                            <button type="button" class="btn-icon" id="btnRefreshCaptcha" title="Đổi mã mới">
+                                                <i class="fa-solid fa-rotate-right"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" id="inputCaptcha" placeholder="Nhập 4 số ở bên trái" required maxlength="4">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-lg" id="btnSubmitLookup">
+                                    <i class="fa-solid fa-magnifying-glass"></i> TRA CỨU HỒ SƠ KHÁM
+                                </button>
+                                <button type="reset" class="btn btn-outline" id="btnResetLookup">
+                                    <i class="fa-solid fa-rotate"></i> Làm mới
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Security Assurance Strip -->
+                    <div class="security-assurance">
+                        <div class="sec-item">
+                            <i class="fa-solid fa-lock text-yellow"></i>
+                            <span>Bảo mật 100%: Dữ liệu chỉ hiển thị khi khớp chính xác cả 2 yếu tố</span>
+                        </div>
+                        <div class="sec-item">
+                            <i class="fa-solid fa-user-ninja text-blue"></i>
+                            <span>Chống cào dữ liệu bot tự động (Anti-Scraping & Captcha)</span>
+                        </div>
+                        <div class="sec-item">
+                            <i class="fa-solid fa-file-excel text-green"></i>
+                            <span>Đồng bộ 100% chuẩn định dạng danh sách khám sức khỏe Bưu điện</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lookup Result Display Area -->
+            <div class="result-container container" id="resultContainer" style="display: none;">
+                <div class="result-card success-result" id="resultSuccessCard">
+                    <div class="result-header">
+                        <div class="status-badge valid">
+                            <i class="fa-solid fa-circle-check"></i> XÁC THỰC HỒ SƠ SỨC KHỎE THÀNH CÔNG
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn btn-sm btn-outline" id="btnToggleMask">
+                                <i class="fa-solid fa-eye-slash" id="iconMask"></i> <span id="textMask">Hiện đầy đủ Mã HRM</span>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" id="btnPrintResult">
+                                <i class="fa-solid fa-print"></i> In kết quả khám
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Medical Examination Result Receipt -->
+                    <div class="receipt-box" id="printableReceipt">
+                        <div class="receipt-header">
+                            <div class="receipt-logo">
+                                <i class="fa-solid fa-hospital-user"></i>
+                                <span>BỆNH VIỆN BƯU ĐIỆN - PHIẾU KẾT QUẢ KHÁM SỨC KHỎE LAO ĐỘNG</span>
+                            </div>
+                            <div class="receipt-meta">
+                                <span class="rec-no">MÃ HRM: <strong id="resHrmCode">00269118</strong></span>
+                                <span class="rec-date" id="resUpdatedDate">STT Khám: #353</span>
+                            </div>
+                        </div>
+
+                        <!-- Worker Profile Info -->
+                        <div class="person-profile">
+                            <div class="profile-avatar">
+                                <i class="fa-solid fa-user-doctor"></i>
+                            </div>
+                            <div class="profile-main">
+                                <h2 class="person-name" id="resFullName">EO CHANG HY</h2>
+                                <p class="person-sub">
+                                    Giới tính: <strong id="resGender">Nam</strong> | 
+                                    Ngày sinh: <strong id="resDob">09/10/1992</strong> | 
+                                    Chức danh: <strong id="resJobTitle">205 - Nhân viên kinh doanh</strong>
+                                </p>
+                                <p class="person-sub">
+                                    Bưu cục / VHX: <strong id="resPostOffice">An Dương Vương</strong> | 
+                                    Đơn vị: <strong id="resUnitName">Bưu điện phường ABC</strong>
+                                </p>
+                            </div>
+                            <div class="profile-stamp">
+                                <div class="official-seal">
+                                    <i class="fa-solid fa-certificate"></i>
+                                    <span id="resHealthClassSeal">LOẠI II</span>
+                                    <small>VNPOST HEALTH</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Physical & Clinical Stats -->
+                        <h4 class="section-title"><i class="fa-solid fa-heart-pulse text-blue"></i> 1. THỂ LỰC VÀ LÂM SÀNG BAN ĐẦU</h4>
+                        <div class="receipt-grid">
+                            <div class="info-cell">
+                                <span class="cell-label">Chiều cao / Cân nặng</span>
+                                <span class="cell-value" id="resBodyStat">157 cm / 58 kg</span>
+                            </div>
+                            <div class="info-cell">
+                                <span class="cell-label">Thể lực / Huyết áp</span>
+                                <span class="cell-value" id="resPhysicalBp">Loại 2 / 110/70 mmHg</span>
+                            </div>
+                            <div class="info-cell">
+                                <span class="cell-label">Thị lực (Phải / Trái)</span>
+                                <span class="cell-value" id="resVision">Phải: 10/10 | Trái: 10/10 (BT)</span>
+                            </div>
+                            <div class="info-cell">
+                                <span class="cell-label">Khám Chuyên Khoa (TMH / RHM)</span>
+                                <span class="cell-value" id="resEntDental">TMH: BT | RHM: BT</span>
+                            </div>
+                            <div class="info-cell full">
+                                <span class="cell-label">Nội Da liễu / Ngoại khoa / X-Quang</span>
+                                <span class="cell-value" id="resClinicalOther">Nội da liễu: BT | Ngoại: BT | X-Quang: BT</span>
+                            </div>
+                            <div class="info-cell full highlight-box">
+                                <span class="cell-label"><i class="fa-solid fa-wave-square"></i> SIÊU ÂM Ổ BỤNG</span>
+                                <span class="details-content" id="resUltrasound">Polype túi mật</span>
+                            </div>
+                        </div>
+
+                        <!-- Blood Test & Lab Results -->
+                        <h4 class="section-title"><i class="fa-solid fa-vial text-yellow"></i> 2. CHỈ SỐ XÉT NGHIỆM MÁU & NƯỚC TIỂU CHI TIẾT</h4>
+                        <div class="lab-table-container">
+                            <table class="lab-table">
+                                <thead>
+                                    <tr>
+                                        <th>XN CTM</th>
+                                        <th>XN Nước tiểu</th>
+                                        <th>Acid Uric</th>
+                                        <th>Creatinin</th>
+                                        <th>Glucose</th>
+                                        <th>Ure</th>
+                                        <th>SGOT</th>
+                                        <th>SGPT</th>
+                                        <th>Triglycerides</th>
+                                        <th>Cholesterol</th>
+                                        <th>GGT</th>
+                                        <th>Morphin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="labCtm">BT</td>
+                                        <td id="labUrine">BT</td>
+                                        <td id="labAcidUric">385</td>
+                                        <td id="labCreatinin">87</td>
+                                        <td id="labGlucose">5.3</td>
+                                        <td id="labUre">5.5</td>
+                                        <td id="labSgot">18</td>
+                                        <td id="labSgpt">19</td>
+                                        <td id="labTriglycerides">1.8</td>
+                                        <td id="labCholesterol">5.6</td>
+                                        <td id="labGgt">29</td>
+                                        <td id="labMorphin">ÂM TÍNH</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Conclusion & Doctor's Medical Advice -->
+                        <h4 class="section-title" style="margin-top: 20px;"><i class="fa-solid fa-user-check text-green"></i> 3. ĐÁNH GIÁ PHÂN LOẠI & KẾT LUẬN Y TẾ</h4>
+                        <div class="receipt-grid">
+                            <div class="info-cell">
+                                <span class="cell-label">Phân Loại Sức Khỏe</span>
+                                <span class="status-tag tag-success" id="resHealthClass">LOẠI II</span>
+                            </div>
+                            <div class="info-cell">
+                                <span class="cell-label">Kết Luận Sức Khỏe</span>
+                                <span class="cell-value" id="resConclusion" style="color: var(--success-color);">Hiện tại đủ sức khỏe để làm việc</span>
+                            </div>
+                            <div class="info-cell full highlight-yellow-box">
+                                <span class="cell-label"><i class="fa-solid fa-comment-medical"></i> TƯ VẤN VÀ HƯỚNG DẪN BẮC SĨ</span>
+                                <div class="details-content" id="resMedicalAdvice">
+                                    Polype túi mật -> ĐN khám và điều trị chuyên khoa định kỳ.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="receipt-footer">
+                            <p><i class="fa-solid fa-circle-info"></i> Kết quả tra cứu này được trích xuất trực tiếp từ danh sách khám sức khỏe định kỳ người lao động Bưu điện (VNPost).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Result State -->
+                <div class="result-card error-result" id="resultErrorCard" style="display: none;">
+                    <div class="error-box">
+                        <div class="error-icon">
+                            <i class="fa-solid fa-shield-virus"></i>
+                        </div>
+                        <h3>Không Tìm Thấy Hồ Sơ Sức Khỏe Phù Hợp</h3>
+                        <p id="errorMessageText">
+                            Dữ liệu tra cứu không tồn tại hoặc thông tin <strong>Mã HRM / Họ Tên / Ngày Sinh</strong> nhập vào không khớp với hệ thống khám sức khỏe.
+                        </p>
+                        <div class="error-tips">
+                            <strong><i class="fa-solid fa-lightbulb"></i> Gợi ý xử lý:</strong>
+                            <ul>
+                                <li>Đảm bảo mã HRM gồm 8 chữ số (Ví dụ: <code>00269118</code>).</li>
+                                <li>Đảm bảo nhập đúng ngày sinh dạng <code>DD/MM/YYYY</code> (Ví dụ: <code>09/10/1992</code>).</li>
+                                <li>Liên hệ Phòng Tổ chức Lao động / Y tế Bưu điện để kiểm tra trạng thái nhập liệu.</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-primary" id="btnRetrySearch">
+                            <i class="fa-solid fa-arrow-rotate-left"></i> Thử lại tra cứu
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: CMS ADMIN & EXCEL DATA IMPORT -->
+        <section class="tab-pane" id="cms-tab">
+            <div class="container cms-container">
+
+                <div class="cms-header-row">
+                    <div>
+                        <h2 class="page-title"><i class="fa-solid fa-sliders text-yellow"></i> CMS Quản Lý Danh Sách Khám Sức Khỏe Bưu Điện</h2>
+                        <p class="page-subtitle">Nhập liệu thủ công, Import file Excel/CSV chuẩn theo cột Bưu điện</p>
+                    </div>
+                    <div class="cms-actions">
+                        <button class="btn btn-success" id="btnOpenAddModal">
+                            <i class="fa-solid fa-plus"></i> Thêm Lao Động Mới
+                        </button>
+                        <button class="btn btn-outline" id="btnDownloadSampleCsv">
+                            <i class="fa-solid fa-file-excel"></i> Tải Mẫu Excel Khám SK (.csv)
+                        </button>
+                        <button class="btn btn-outline-danger" id="btnResetDefaultData">
+                            <i class="fa-solid fa-trash-arrow-up"></i> Reset Dữ Liệu Mẫu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CMS Stats Overview -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-blue">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statTotalRecords">0</span>
+                            <span class="stat-label">Tổng lao động trong DB</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-yellow">
+                            <i class="fa-solid fa-stethoscope"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statCompletedRecords">0</span>
+                            <span class="stat-label">Hồ sơ khám sức khỏe</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-green">
+                            <i class="fa-solid fa-lock text-white"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">100%</span>
+                            <span class="stat-label">Xác thực 2 lớp (HRM + Ngày Sinh)</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-dark">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statLastImport">Hôm nay</span>
+                            <span class="stat-label">Cập nhật gần nhất</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import CSV / Excel Section -->
+                <div class="card import-card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-file-import text-blue"></i> Import Danh Sách Khám Sức Khỏe Từ Excel / CSV</h3>
+                        <span class="badge-tag">Chuẩn 37 cột Bưu Điện</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="dropzone" id="csvDropzone">
+                            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                            <h4>Kéo thả file CSV/Excel vào đây hoặc click để chọn file</h4>
+                            <p class="dropzone-text">Hệ thống khớp chuẩn các cột: <code>STT, HỌ TÊN, HRM, GIỚI TÍNH, NGÀY SINH, Chức danh, Bưu cục, ĐƠN VỊ...</code></p>
+                            <input type="file" id="fileCsvInput" accept=".csv" class="file-hidden">
+                            <button class="btn btn-secondary" id="btnSelectFile">
+                                <i class="fa-solid fa-folder-open"></i> Chọn File Từ Máy Tính
+                            </button>
+                        </div>
+
+                        <!-- Import Preview Area -->
+                        <div id="importPreviewArea" style="display: none;" class="preview-area">
+                            <div class="preview-header">
+                                <h4><i class="fa-solid fa-table-list"></i> Xem Trước Dữ Liệu Excel Khám SK (<span id="importCount">0</span> lao động)</h4>
+                                <div class="preview-actions">
+                                    <button class="btn btn-primary" id="btnConfirmImport">
+                                        <i class="fa-solid fa-check"></i> Xác Nhận Lưu Vào DB
+                                    </button>
+                                    <button class="btn btn-outline" id="btnCancelImport">Hủy bỏ</button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table" id="tablePreview">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Họ và Tên</th>
+                                            <th>Mã HRM</th>
+                                            <th>Ngày Sinh</th>
+                                            <th>Giới Tính</th>
+                                            <th>Chức Danh</th>
+                                            <th>Bưu Cục / Đơn Vị</th>
+                                            <th>Phân Loại SK</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyPreview"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table Section -->
+                <div class="card data-card">
+                    <div class="card-header flex-between">
+                        <h3><i class="fa-solid fa-database text-yellow"></i> Danh Sách Hồ Sơ Khám Sức Khỏe Lao Động Trong DB</h3>
+
+                        <div class="table-tools">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="filterInput" placeholder="Tìm theo Tên, Mã HRM, Bưu cục...">
+                            </div>
+                            <button class="btn btn-outline btn-sm" id="btnToggleCmsMask">
+                                <i class="fa-solid fa-eye" id="iconCmsMask"></i> <span id="textCmsMask">Ẩn mờ mã HRM</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body padding-0">
+                        <div class="table-responsive">
+                            <table class="data-table" id="mainDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã HRM</th>
+                                        <th>Họ và Tên</th>
+                                        <th>Giới Tính</th>
+                                        <th>Ngày Sinh</th>
+                                        <th>Chức Danh</th>
+                                        <th>Bưu Cục / Đơn Vị</th>
+                                        <th>Huyết Áp</th>
+                                        <th>Siêu Âm</th>
+                                        <th>Phân Loại SK</th>
+                                        <th>Kết Luận & Tư Vấn</th>
+                                        <th>Thao Tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mainTableBody">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 3: TƯ VẤN BẢO MẬT & DB SCHEMA ADVISORY -->
+        <section class="tab-pane" id="security-tab">
+            <div class="container security-container">
+                <div class="sec-intro">
+                    <h2 class="page-title"><i class="fa-solid fa-shield-virus text-yellow"></i> Bảo Mật Dữ Liệu Khám Sức Khỏe Lao Động Bưu Điện</h2>
+                    <p class="page-subtitle">Phương án xác thực và bảo vệ quyền riêng tư theo đúng dữ liệu thực tế hiện có trong DB</p>
+                </div>
+
+                <div class="advisory-grid">
+
+                    <!-- Box 1: Core Privacy Lookup Rules for Health DB -->
+                    <div class="advisory-card highlight-border">
+                        <div class="adv-header">
+                            <div class="adv-icon bg-yellow">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <h3>1. Xác Thực Tra Cứu Theo Mã HRM & Ngày Sinh</h3>
+                        </div>
+                        <div class="adv-body">
+                            <p>Dữ liệu khám sức khỏe lao động Bưu điện không có số điện thoại hay CCCD trong bảng Excel chính. Do đó, yếu tố riêng tư khớp kép tốt nhất là:</p>
+                            <div class="rule-box">
+                                <strong>Công thức xác thực 2 yếu tố:</strong>
+                                <code>Mã HRM (Mã nhân viên Bưu điện) + Ngày tháng năm sinh (DD/MM/YYYY)</code>
+                            </div>
+                            <ul>
+                                <li><i class="fa-solid fa-check text-green"></i> <strong>Chính xác 100%:</strong> Mã HRM là mã duy nhất cấp cho từng lao động trong toàn mạng lưới VNPost.</li>
+                                <li><i class="fa-solid fa-check text-green"></i> <strong>Chống truy cập trái phép:</strong> Dù biết Mã HRM của đồng nghiệp nhưng không biết chính xác Ngày sinh thì không thể mở kết quả khám y tế riêng tư.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Box 2: Medical Privacy & Data Masking -->
+                    <div class="advisory-card">
+                        <div class="adv-header">
+                            <div class="adv-icon bg-blue">
+                                <i class="fa-solid fa-user-lock"></i>
+                            </div>
+                            <h3>2. Che Mờ Định Danh Trên Màn Hình</h3>
+                        </div>
+                        <div class="adv-body">
+                            <p>Nhằm tuân thủ quy định bảo mật thông tin y tế lao động:</p>
+                            <div class="code-example">
+                                <ul>
+                                    <li>Mã HRM hiển thị dạng masked: <code>0026****</code> (Che 4 số cuối)</li>
+                                    <li>Tên người lao động có thể toggle ẩn bớt nếu hiển thị nơi công cộng.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Box 3: Download Schema Banner -->
+                    <div class="advisory-card full-width bg-light-yellow">
+                        <div class="adv-header">
+                            <div class="adv-icon bg-yellow">
+                                <i class="fa-solid fa-share-nodes"></i>
+                            </div>
+                            <h3>3. File Mẫu Cấu Trúc DB Khám Sức Khỏe Lao Động Bưu Điện</h3>
+                        </div>
+                        <div class="adv-body">
+                            <p>Gửi file mẫu CSV/JSON Schema này cho đối tác hoặc bên phát triển phần mềm để họ nắm được toàn bộ 37 cột khám y tế Bưu điện mà không làm lộ dữ liệu thật:</p>
+
+                            <div class="download-schema-banner">
+                                <div class="ds-info">
+                                    <i class="fa-solid fa-file-excel text-blue"></i>
+                                    <div>
+                                        <strong>Tải Mẫu File Excel Khám Sức Khỏe Chuẩn Bưu Điện:</strong>
+                                        <p>Bao gồm mã HRM, kết quả khám lâm sàng, siêu âm, 12 chỉ số xét nghiệm máu và phân loại sức khỏe.</p>
+                                    </div>
+                                </div>
+                                <div class="ds-btns">
+                                    <button class="btn btn-primary" id="btnDownloadAdvCsv">
+                                        <i class="fa-solid fa-download"></i> Tải Sample Excel (.csv)
+                                    </button>
+                                    <button class="btn btn-secondary" id="btnDownloadJsonSchema">
+                                        <i class="fa-solid fa-code"></i> Tải Schema JSON (.json)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Form: Add / Edit Health Record -->
+    <div class="modal-backdrop" id="modalRecord">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fa-solid fa-user-plus text-yellow"></i> Thêm Hồ Sơ Khám Sức Khỏe Mới</h3>
+                <button class="modal-close" id="btnCloseModal">&times;</button>
+            </div>
+            <form id="recordForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editOriginalHrm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="mStt">STT Khám</label>
+                            <input type="number" id="mStt" placeholder="VD: 353">
+                        </div>
+                        <div class="form-group">
+                            <label for="mFullName">Họ và Tên Lao Động <span class="req">*</span></label>
+                            <input type="text" id="mFullName" required placeholder="VD: EO CHANG HY">
+                        </div>
+                        <div class="form-group">
+                            <label for="mHrmCode">Mã HRM Nhân Viên <span class="req">*</span></label>
+                            <input type="text" id="mHrmCode" required placeholder="VD: 00269118">
+                        </div>
+                        <div class="form-group">
+                            <label for="mGender">Giới Tính</label>
+                            <select id="mGender">
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mDob">Ngày Sinh (DD/MM/YYYY) <span class="req">*</span></label>
+                            <input type="text" id="mDob" required placeholder="VD: 09/10/1992">
+                        </div>
+                        <div class="form-group">
+                            <label for="mJobTitle">Chức Danh Công Việc</label>
+                            <input type="text" id="mJobTitle" placeholder="VD: 205 - Nhân viên kinh doanh">
+                        </div>
+                        <div class="form-group">
+                            <label for="mPostOffice">Bưu Cục / VHX</label>
+                            <input type="text" id="mPostOffice" placeholder="VD: An Dương Vương">
+                        </div>
+                        <div class="form-group">
+                            <label for="mUnitName">Đơn Vị Công Tác</label>
+                            <input type="text" id="mUnitName" placeholder="VD: Bưu điện phường ABC">
+                        </div>
+                        <div class="form-group">
+                            <label for="mHeight">Chiều cao (cm)</label>
+                            <input type="text" id="mHeight" placeholder="157">
+                        </div>
+                        <div class="form-group">
+                            <label for="mWeight">Cân nặng (kg)</label>
+                            <input type="text" id="mWeight" placeholder="58">
+                        </div>
+                        <div class="form-group">
+                            <label for="mBp">Huyết áp</label>
+                            <input type="text" id="mBp" placeholder="110/70">
+                        </div>
+                        <div class="form-group">
+                            <label for="mUltrasound">Siêu âm ổ bụng</label>
+                            <input type="text" id="mUltrasound" placeholder="Polype túi mật">
+                        </div>
+                        <div class="form-group">
+                            <label for="mHealthClass">Phân Loại Sức Khỏe</label>
+                            <select id="mHealthClass">
+                                <option value="Loại I">Loại I</option>
+                                <option value="Loại II">Loại II</option>
+                                <option value="Loại III">Loại III</option>
+                                <option value="Loại IV">Loại IV</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="mConclusion">Kết Luận Sức Khỏe <span class="req">*</span></label>
+                            <input type="text" id="mConclusion" required placeholder="VD: Hiện tại đủ sức khỏe để làm việc">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="mMedicalAdvice">Tư Vấn & Dặn Dò Y Tế</label>
+                            <textarea id="mMedicalAdvice" rows="2" placeholder="VD: Polype túi mật -> ĐN khám và điều trị"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="btnCancelModal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Lưu Hồ Sơ Khám</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <i class="fa-solid fa-hospital-user text-yellow"></i>
+                <span>VNPOST HEALTH LOOKUP &copy; 2026</span>
+            </div>
+            <p class="footer-note">Hệ thống tra cứu kết quả khám sức khỏe định kỳ người lao động Bưu điện (VNPost)</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VNPostWorkerHealthRecordSchema",
+  "description": "Cấu trúc dữ liệu mẫu hồ sơ khám sức khỏe lao động Bưu điện (VNPost)",
+  "type": "object",
+  "properties": {
+    "stt": {
+      "type": "integer",
+      "description": "Số thứ tự trong danh sách khám",
+      "example": 353
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Họ và tên người lao động",
+      "example": "EO CHANG HY"
+    },
+    "hrm_code": {
+      "type": "string",
+      "description": "Mã HRM (Mã nhân viên Bưu điện - Trường xác thực tra cứu chính)",
+      "example": "00269118"
+    },
+    "gender": {
+      "type": "string",
+      "enum": ["Nam", "Nữ"],
+      "description": "Giới tính"
+    },
+    "dob": {
+      "type": "string",
+      "format": "date",
+      "description": "Ngày tháng năm sinh (Trường xác thực 2)",
+      "example": "09/10/1992"
+    },
+    "job_title": {
+      "type": "string",
+      "description": "Chức danh công việc",
+      "example": "205 - Nhân viên kinh doanh"
+    },
+    "post_office": {
+      "type": "string",
+      "description": "Bưu cục / Văn hóa xã",
+      "example": "An Dương Vương"
+    },
+    "unit_name": {
+      "type": "string",
+      "description": "Đơn vị công tác",
+      "example": "Bưu điện phường ABC"
+    },
+    "height": { "type": "string", "example": "157" },
+    "weight": { "type": "string", "example": "58" },
+    "physical": { "type": "string", "example": "2" },
+    "blood_pressure": { "type": "string", "example": "110/70" },
+    "vision_right": { "type": "string", "example": "10/10" },
+    "vision_left": { "type": "string", "example": "10/10" },
+    "vision_disease": { "type": "string", "example": "BT" },
+    "ent": { "type": "string", "example": "BT" },
+    "dental": { "type": "string", "example": "BT" },
+    "dermatology": { "type": "string", "example": "BT" },
+    "surgery": { "type": "string", "example": "BT" },
+    "xray": { "type": "string", "example": "BT" },
+    "ultrasound": { "type": "string", "example": "Polype túi mật" },
+    "gynecology": { "type": "string", "example": "" },
+    "blood_tests": {
+      "type": "object",
+      "properties": {
+        "ctm": { "type": "string", "example": "BT" },
+        "urine": { "type": "string", "example": "BT" },
+        "acid_uric": { "type": "string", "example": "385" },
+        "creatinin": { "type": "string", "example": "87" },
+        "glucose": { "type": "string", "example": "5.3" },
+        "ure": { "type": "string", "example": "5.5" },
+        "sgot": { "type": "string", "example": "18" },
+        "sgpt": { "type": "string", "example": "19" },
+        "triglycerides": { "type": "string", "example": "1.8" },
+        "cholesterol": { "type": "string", "example": "5.6" },
+        "ggt": { "type": "string", "example": "29" },
+        "morphin": { "type": "string", "example": "ÂM TÍNH" }
+      }
+    },
+    "health_class": {
+      "type": "string",
+      "description": "Phân loại sức khỏe (Loại I, II, III, IV)",
+      "example": "Loại II"
+    },
+    "conclusion": {
+      "type": "string",
+      "description": "Kết luận sức khỏe tổng quát",
+      "example": "Hiện tại đủ sức khỏe để làm việc"
+    },
+    "medical_advice": {
+      "type": "string",
+      "description": "Tư vấn và hướng dẫn chuyên môn",
+      "example": "Polype túi mật -> ĐN khám và điều trị"
+    }
+  },
+  "required": ["full_name", "hrm_code", "dob"]
+}
